@@ -6,12 +6,26 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 10:09:49 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/21 18:47:05 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/22 09:24:52 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "so_long.h"
+
+int	str_is_only_char(char *str, char c)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] != c)
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
 int		ft_arraylen(char **array)
 {

@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 10:30:40 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/21 20:56:47 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/22 09:28:17 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 void	check_if_map_is_closed(char **map)
 {
-	int i;
 	int j;
 	int	last_line;
 	int	last_char;
@@ -27,17 +26,13 @@ void	check_if_map_is_closed(char **map)
 		exit_with_message("Map must be at least 3x3", 1);
 	while (map[j] != '\0')
 	{
-		if (map[j][0] != WALL_CHAR || map[j][last_char] != WALL_CHAR)
-			exit_with_message("Map is not surrounded by walls", 1);
-		if (j != 0 && j != last_line)	
-			continue ;
-		i = 0;
-		while (map[j][i] != '\0')
+		if (j != 0 && j != last_line)
 		{
-			if (map[j][i] != WALL_CHAR)
+			if (map[j][0] != WALL_CHAR || map[j][last_char] != WALL_CHAR)
 				exit_with_message("Map is not surrounded by walls", 1);
-			i++;
 		}
+		else if (str_is_only_char(map[j], WALL_CHAR) == 1)
+			exit_with_message("Map is not surrounded by walls", 1);
 		j++;
 	}
 }
@@ -74,7 +69,6 @@ void	get_map_validation_info(t_map_validation* info, char **map)
 void	map_validation(char **map, int* amount_collectibles)
 {
 	t_map_validation	map_info;
-	char				**copy_map;
 
 	ft_bzero(&map_info, sizeof(t_map_validation));
 	get_map_validation_info(&map_info, map);

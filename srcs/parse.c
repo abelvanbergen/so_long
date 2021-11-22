@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 08:48:08 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/21 15:22:12 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/22 09:21:26 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,10 @@ static char	**read_map(char *filename)
 
 void	parse_map(char *filename, t_gamedata *gamedata)
 {
+	printf("Voor map lezen\n");
 	gamedata->map = read_map(filename);
 	if (ft_arraylen(gamedata->map) == 0)
 		exit_with_message("file is empty", 1);
-	map_validation(gamedata->map);
+	printf("Voorbij map lezen\n");
+	map_validation(gamedata->map, &gamedata->amount_collectible);
 }

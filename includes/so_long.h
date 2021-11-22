@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:26:10 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/21 22:04:04 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/22 09:17:03 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,14 @@
 # define UNBLOCKED_EXIT_TEXTURE "textures/unblocked_exit.png"
 # define ENEMY_TEXTURE "textures/enemy.png"
 
-#define W_KEY 13
-#define S_KEY 1
-#define A_KEY 0
-#define D_KEY 2
-#define LEFT_ARROW_KEY 126
-#define LEFT_ARROW_KEY 125
-#define LEFT_ARROW_KEY 123
-#define RIGHT_ARROW_KEY 124
+# define W_KEY 13
+# define S_KEY 1
+# define A_KEY 0
+# define D_KEY 2
+# define UP_ARROW_KEY 126
+# define DOWN_ARROW_KEY 125
+# define LEFT_ARROW_KEY 123
+# define RIGHT_ARROW_KEY 124
 
 /*
 ** utils image elem
@@ -121,8 +121,9 @@ typedef struct	s_gamedata
 
 void	exit_with_message(char *message, int exitcode);
 
-int		get_exponent(int base, int power);
+int		str_is_only_char(char *str, char c);
 int		ft_arraylen(char **array);
+int		get_exponent(int base, int power);
 void	print_map(char **array);
 void	my_mlx_pixel_put(t_imginfo *img, int x, int y, int color);
 
@@ -135,5 +136,6 @@ void	map_validation(char **map, int* amount_collectibles);
 void	parse_map(char *filename, t_gamedata *gamedata);
 void	get_window(t_window* window, void* mlx, char **map);
 void	get_textures(t_textures* textures, void *mlx);
+void	get_image(t_imginfo* img, void* mlx, t_2int gridsize, int texturesize);
 
 #endif
