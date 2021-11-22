@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   ft_strchr.c                                        :+:    :+:            */
+/*   error.c                                            :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
+/*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2019/10/29 14:53:46 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/21 11:38:16 by abelfrancis   ########   odam.nl         */
+/*   Created: 2021/11/21 08:43:53 by abelfrancis   #+#    #+#                 */
+/*   Updated: 2021/11/21 10:29:51 by abelfrancis   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-char	*ft_strchr(const char *s, int c)
-{
-	int i;
+#include <stdio.h>
+#include <stdlib.h>
 
-	i = 0;
-	while (s[i] != '\0')
-	{
-		if (s[i] == c)
-			return ((char *)&s[i]);
-		i++;
-	}
-	if (c == '\0')
-		return ((char *)&s[i]);
-	return (0);
+void	exit_with_message(char *message, int exitcode)
+{
+	printf("Error\n%s\n", message);
+	exit(exitcode);
 }
