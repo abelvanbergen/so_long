@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2019/11/25 08:48:42 by avan-ber       #+#    #+#                */
-/*   Updated: 2020/01/14 15:23:49 by avan-ber      ########   odam.nl         */
+/*   Created: 2019/11/25 08:48:42 by avan-ber      #+#    #+#                 */
+/*   Updated: 2021/11/21 09:34:55 by abelfrancis   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define GET_NEXT_LINE_H
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1000
+#  define BUFFER_SIZE 1024
 # endif
 # include <unistd.h>
 # include <stdlib.h>
