@@ -6,11 +6,7 @@
 #    By: abelfranciscusvanbergen <abelfranciscus      +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/11/18 19:37:36 by abelfrancis   #+#    #+#                  #
-<<<<<<< HEAD
-#    Updated: 2021/11/19 08:57:47 by avan-ber      ########   odam.nl          #
-=======
-#    Updated: 2021/11/21 15:18:32 by abelfrancis   ########   odam.nl          #
->>>>>>> e8d93ff62348f1517c4f76bd74618cbb51450f1b
+#    Updated: 2021/11/22 08:55:46 by avan-ber      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,13 +36,8 @@ LIBFT_LOC	= lib/libft
 GNL_LOC		= lib/get_next_line
 SO_LONG_LOC = includes
 # librarys
-<<<<<<< HEAD
 LIBS		=	-L $(MLX_LOC) -lmlx \
 				-L $(LIBFT_LOC) -lft\
-=======
-LIBS		=	-L $(LIBFT_LOC) -lft\
-				-L $(MLX_LOC) -lmlx\
->>>>>>> e8d93ff62348f1517c4f76bd74618cbb51450f1b
 				-L $(GNL_LOC) -lgnl
 
 FRAMEWORK =	-framework OpenGl\
@@ -79,19 +70,11 @@ clean:
 	$(MAKE) -C $(GNL_LOC) clean
 
 fclean: clean
-<<<<<<< HEAD
-	make clean -C $(MLX_LOC)
-	rm -rf libmlx.dylib lib/mlx/libmlx.dylib
-	make fclean -C $(LIBFT_LOC)
-	rm -f $(LIBFT_LOC)/libft.a
-	make fclean -C $(GNL_LOC)
-=======
 	# make clean -C $(MLX_LOC)
 	# rm -rf libmlx.dylib lib/mlx/libmlx.dylib
 	rm -rf libmlx.dylib
 	$(MAKE) -C $(LIBFT_LOC) fclean
 	$(MAKE) -C $(GNL_LOC) fclean
->>>>>>> e8d93ff62348f1517c4f76bd74618cbb51450f1b
 	rm -f $(NAME)
 
 re: fclean all
