@@ -6,23 +6,26 @@
 #    By: abelfranciscusvanbergen <abelfranciscus      +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/11/18 19:37:36 by abelfrancis   #+#    #+#                  #
-#    Updated: 2021/11/22 09:45:12 by avan-ber      ########   odam.nl          #
+#    Updated: 2021/11/23 14:36:48 by avan-ber      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = so_long
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g
 
 OBJ_DIR = objs
 SRC_DIR = srcs
 
 _OBJ_FILES =	main \
 				error \
-				get_textures \
+				hooks \
 				imagesetup \
+				make_frame \
 				map_validation \
+				move \
 				parse \
+				textures \
 				utils \
 				vla \
 				windowsetup
@@ -57,11 +60,12 @@ all: $(NAME)
 
 $(NAME): $(OBJ_FILES)
 	make -C $(MLX_LOC)
+	cp lib/mlx/libmlx.a .
 	make bonus -C $(LIBFT_LOC)
 	make bonus -C $(GNL_LOC)
-	$(CC) $(FLAGS) $(LIBS) $(FRAMEWORK) -o $(NAME) $(OBJ_FILES) $(INCLUDES)
+	$(CC) $(FLAGS) $(LIBS) $(FRAMEWORK) -o $(NAME) $(OBJ_FILES) $(INCLUDES) -fsanitize=address -g
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c 
 	@mkdir -p $(OBJ_DIR)/$(dir $*)
 	gcc -c $(CFLAGS) $(INCLUDES) -I . $< -o $@
 
@@ -72,8 +76,7 @@ clean:
 
 fclean: clean
 	make clean -C $(MLX_LOC)
-	rm -rf lib/mlx/libmlx.a
-	rm -rf libmlx.dylib
+	rm -rf libmlx.a lib/mlx/libmlx.a
 	$(MAKE) -C $(LIBFT_LOC) fclean
 	$(MAKE) -C $(GNL_LOC) fclean
 	rm -f $(NAME)

@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 10:30:40 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/22 09:28:17 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/23 19:10:56 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ void	get_map_validation_info(t_map_validation* info, char **map)
 	int	i;
 	int	j;
 
-	info->map_len = ft_strlen(map[0]);
-	info->equal_map_len = true;
 	j = 0;
 	while (map[j] != NULL)
 	{
@@ -58,6 +56,8 @@ void	get_map_validation_info(t_map_validation* info, char **map)
 				info->amount_collectibles++;
 			else if (map[j][i] == EXIT_CHAR)
 				info->amount_exit++;
+			else if (ft_strchr(ENEMY_CHARS, map[j][i]) != NULL)
+				info->amount_enemy++;
 			i++;
 		}
 		if (ft_strlen(map[j]) != info->map_len)
@@ -66,20 +66,23 @@ void	get_map_validation_info(t_map_validation* info, char **map)
 	}
 }
 
-void	map_validation(char **map, int* amount_collectibles)
+void	map_validation(char **map, int* amount_collectibles, int *amount_enemy)
 {
-	t_map_validation	map_info;
+	t_map_validation	validation;
 
-	ft_bzero(&map_info, sizeof(t_map_validation));
-	get_map_validation_info(&map_info, map);
-	if (map_info.amount_players != 1)
+	ft_bzero(&validation, sizeof(t_map_validation));
+	validation.map_len = ft_strlen(map[0]);
+	validation.equal_map_len = true;
+	get_map_validation_info(&validation, map);
+	if (validation.amount_players != 1)
 		exit_with_message("Not the right amount of players\nCan only be 1", 1);
-	if (map_info.amount_collectibles <= 0)
+	if (validation.amount_collectibles <= 0)
 		exit_with_message("Not enough collectibles\nShould be atleast 1", 1);
-	if (map_info.amount_players <= 0)
-		exit_with_message("Not enough collectibles\nShould be atleast 1", 1);
-	if (map_info.equal_map_len == false)
+	if (validation.amount_exit <= 0)
+		exit_with_message("Not enough exits\nShould be atleast 1", 1);
+	if (validation.equal_map_len == false)
 		exit_with_message("Map is not a rectyangle", 1);
-	*amount_collectibles = map_info.amount_collectibles;
+	*amount_collectibles = validation.amount_collectibles;
+	*amount_enemy = validation.amount_enemy;
 	check_if_map_is_closed(map);
 }

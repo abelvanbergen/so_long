@@ -6,13 +6,14 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 13:54:12 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/21 17:20:43 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/22 18:52:25 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include "so_long.h"
 
-char	**get_grid_to_show(t_2int mapsize)
+char	**get_map_to_show(t_2int mapsize)
 {
 	int		i;
 	char	**grid;
@@ -28,6 +29,7 @@ char	**get_grid_to_show(t_2int mapsize)
 			exit_with_message("malloc failed", 1);
 		i++;
 	}
+	printf("size map_to_show: %d-%d\n", mapsize.x + 1, mapsize.y + 1);
 	return (grid);
 }
 
@@ -44,46 +46,45 @@ int	*get_tilesizes(int begin_size)
 	{
 		array[i] = begin_size;
 		begin_size /= 2;
+		i++;
 	}
 	return (array);
 }
 
-void	get_window_size(t_window* window, void *mlx, char **map)
+void	get_window_size(t_window* window, t_2int mapsize)
 {
-	t_2int	mapsize;
 	t_2int	max_frame_size;
 	int		*tilesizes;
 	int		i;
 	
-	mapsize.x = ft_strlen(map[0]);
-	mapsize.y = ft_arraylen(map);
-	// mlx_get_screen_size(mlx, &max_frame_size.x, &max_frame_size.y);
 	max_frame_size.x = 1920;
 	max_frame_size.y = 1080;
-	(void)mlx;
-	if (mapsize.x < VIEW_ABLE_WITDH)
-		window->mapsize.x = mapsize.x;
+	if (mapsize.x < VIEWABLE_WITDH)
+		window->viewable_mapsize.x = mapsize.x;
 	else
-		window->mapsize.x = VIEW_ABLE_WITDH;
-	if (mapsize.y < VIEW_ABLE_HEIGHT)
-		window->mapsize.y = mapsize.y;
+		window->viewable_mapsize.x = VIEWABLE_WITDH;
+	if (mapsize.y < VIEWABLE_HEIGHT)
+		window->viewable_mapsize.y = mapsize.y;
 	else
-		window->mapsize.y = VIEW_ABLE_HEIGHT;
-	tilesizes = get_tilesizes(VIEW_ABLE_TEXTURE_SIZE);
+		window->viewable_mapsize.y = VIEWABLE_HEIGHT;
+	tilesizes = get_tilesizes(VIEWABLE_TEXTURE_SIZE);
 	i = 0;
-	while (max_frame_size.x >= tilesizes[i] * window->mapsize.x && max_frame_size.y >= tilesizes[i] * window->mapsize.y)
+	printf("y: %d\n", window->viewable_mapsize.y);
+	while (max_frame_size.x < tilesizes[i] * window->viewable_mapsize.x ||
+				max_frame_size.y < tilesizes[i] * window->viewable_mapsize.y)
 		i++;
 	window->max_texture_size = tilesizes[i];
 }
 
-void	get_window(t_window* window, void* mlx, char **map)
+void	get_window(t_window* window, void* mlx, t_2int mapsize)
 {
 	t_2int	windowsize;
-	get_window_size(window, mlx, map);
-	windowsize.x = window->mapsize.x * window->max_texture_size;
-	windowsize.y = window->mapsize.y * window->max_texture_size;
+	get_window_size(window, mapsize);
+	windowsize.x = window->viewable_mapsize.x * window->max_texture_size;
+	windowsize.y = window->viewable_mapsize.y * window->max_texture_size;
+	printf("windowsize\nx: %d\ny: %d\n", windowsize.x, windowsize.y);
 	window->frame = mlx_new_window(mlx, windowsize.x, windowsize.y, "so_long");
 	if (window->frame == NULL)
 		exit_with_message("mlx_new_window failed", 1);
-	window->grid_to_show = get_grid_to_show(window->mapsize);
+	window->map_to_show = get_map_to_show(window->viewable_mapsize);
 }
