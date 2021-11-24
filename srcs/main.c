@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:25:54 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/23 19:44:26 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/24 11:28:44 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,21 @@
 
 int	process_movement(t_gamedata* gamedata)
 {
-	t_2int	delta;
-
 	if (gamedata->move.up == true || gamedata->move.down == true ||
 					gamedata->move.left == true || gamedata->move.right == true)
 	{
-		ft_bzero(&delta, sizeof(t_2int));
+		ft_bzero(&gamedata->player.delta, sizeof(t_2int));
 		if (gamedata->move.up == true)
-			delta.y = -1;
+			gamedata->player.delta.y = -1;
 		else if (gamedata->move.down == true)
-			delta.y = 1;
+			gamedata->player.delta.y = 1;
 		else if (gamedata->move.left == true)
-			delta.x = -1;
+			gamedata->player.delta.x = -1;
 		else if (gamedata->move.right == true)
-			delta.x = 1;
+			gamedata->player.delta.x = 1;
 		ft_bzero(&gamedata->move, sizeof(t_move));
-		move_player(gamedata, delta.x, delta.y);
+		move_player(&gamedata->player, &gamedata->mapinfo);
+		move_enemies(gamedata->mapinfo.map, &gamedata->enemy);
 		make_frame(gamedata);
 	}
 	return (0);

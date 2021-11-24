@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/22 11:52:22 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/23 19:22:54 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/24 11:44:04 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,22 +56,12 @@ t_2int	get_start(t_2int mapsize, t_2int viewable_size, t_2int player_pos)
 
 	dx = viewable_size.x / 2;
 	dy = viewable_size.y / 2;
-	printf("viewable_size.y: %d\n", viewable_size.y);
 	if (player_pos.x - dx < 0)
-	{
 		middle.x = dx;
-		printf("pos_x: %d\nJUMP: 1\n", player_pos.x);
-	}
 	else if (player_pos.x + dx >= mapsize.x)
-	{
 		middle.x = mapsize.x - (dx + (viewable_size.x % 2 == 1));
-		printf("pos_x: %d\nJUMP: 2\n", player_pos.x);
-	}
 	else
-	{
 		middle.x = player_pos.x;
-		printf("pos_x: %d\nJUMP: 3\n", player_pos.x);
-	}
 	if (player_pos.y - dy < 0)
 		middle.y = dy;
 	else if (player_pos.y + dy >= mapsize.y)
@@ -80,72 +70,101 @@ t_2int	get_start(t_2int mapsize, t_2int viewable_size, t_2int player_pos)
 		middle.y = player_pos.y;
 	start.x = middle.x - dx;
 	start.y = middle.y - dy;
-	printf("size: %d-%d\n", start.x, start.y);
-	printf("--------\n");
 	return start;
 }
 
-void	set_map_to_show(t_gamedata* gamedate)
+void	set_map_to_show(t_gamedata* gamedata, t_2int start)
 {
-	t_2int	start;
 	t_2int	loc;
 	t_2int	size;
 
-	start = get_start(gamedate->mapinfo.size,
-					gamedate->window.viewable_mapsize, gamedate->player.pos);
-	size = gamedate->window.viewable_mapsize;
+	size = gamedata->window.viewable_mapsize;
 	loc.y = 0;
 	while (loc.y < size.y)
 	{
 		loc.x = 0;
 		while (loc.x < size.x)
 		{
-			gamedate->window.map_to_show[loc.y][loc.x] =
-						gamedate->mapinfo.map[loc.y + start.y][loc.x + start.x];
+			gamedata->window.map_to_show[loc.y][loc.x] =
+						gamedata->mapinfo.map[loc.y + start.y][loc.x + start.x];
 			loc.x++;
 		}
-		gamedate->window.map_to_show[loc.y][loc.x] = '\0';
+		gamedata->window.map_to_show[loc.y][loc.x] = '\0';
 		loc.y++;
 	}
-	gamedate->window.map_to_show[loc.y] = NULL;
+	gamedata->window.map_to_show[loc.y] = NULL;
 }
 
 void	texture_jumptable(t_gamedata *gamedata, t_2int loc, char c)
 {
 	const int	max_texture_size = gamedata->window.max_texture_size;
 
-	if (c == '1')
-		write_texture_to_image(&gamedata->img, &gamedata->textures.wall,
-														loc, max_texture_size);
+	if (c == WALL_CHAR)
+		write_texture_to_image(&gamedata->img, &gamedata->textures.wall, loc, max_texture_size);
+	else if (c == ENEMY_PATH_HORIZONTAL)
+		write_texture_to_image(&gamedata->img, &gamedata->textures.path_horizontal, loc, max_texture_size);
+	else if (c == ENEMY_PATH_VERTICAL)
+		write_texture_to_image(&gamedata->img, &gamedata->textures.path_vertical, loc, max_texture_size);
+	else if (c == ENEMY_PATH_CROSSING)
+		write_texture_to_image(&gamedata->img, &gamedata->textures.path_crossing, loc, max_texture_size);
 	else
 	{
-		write_texture_to_image(&gamedata->img, &gamedata->textures.floor,
-														loc, max_texture_size);
-		if (c == 'P')
-			write_texture_to_image(&gamedata->img, &gamedata->textures.player,
-														loc, max_texture_size);
-		else if (c == 'C')
-			write_texture_to_image(&gamedata->img,
-						&gamedata->textures.collectible, loc, max_texture_size);
-		else if (c == 'E' && gamedata->mapinfo.tokens == 0)
-			write_texture_to_image(&gamedata->img,
-					&gamedata->textures.unblocked_exit, loc, max_texture_size);
-		else if (c == 'E')
-			write_texture_to_image(&gamedata->img,
-					&gamedata->textures.blocked_exit, loc, max_texture_size);
-		else if (c == 'v')
-			write_texture_to_image(&gamedata->img, &gamedata->textures.enemy,
-														loc, max_texture_size);
+		write_texture_to_image(&gamedata->img, &gamedata->textures.floor, loc, max_texture_size);
+		if (c == COLLECTIBLE_CHAR)
+			write_texture_to_image(&gamedata->img, &gamedata->textures.collectible, loc, max_texture_size);
+		else if (c == EXIT_CHAR && gamedata->mapinfo.tokens == 0)
+			write_texture_to_image(&gamedata->img, &gamedata->textures.unblocked_exit, loc, max_texture_size);
+		else if (c == EXIT_CHAR)
+			write_texture_to_image(&gamedata->img, &gamedata->textures.blocked_exit, loc, max_texture_size);
+	}
+}
+
+void	write_entity(t_gamedata *gamedata, t_entity *entity, t_2int *start,
+															t_imginfo *texture)
+{
+	t_2int	pos;
+	t_2int	loc;
+
+	pos.x = entity->pos.x - start->x;
+	pos.y = entity->pos.y - start->y;
+	loc.x = pos.x * gamedata->window.max_texture_size;
+	loc.y = pos.y * gamedata->window.max_texture_size;
+	write_texture_to_image(&gamedata->img, texture, loc, gamedata->window.max_texture_size);
+}
+
+void	write_enemy(t_gamedata *gamedata, t_entity *enemy, t_2int *start, t_2int *viewmap_size)
+{
+	if (enemy->pos.x < start->x || enemy->pos.x >= start->x + viewmap_size->x)
+		return ;
+	if (enemy->pos.y < start->y || enemy->pos.y >= start->y + viewmap_size->y)
+		return ;
+	write_entity(gamedata, enemy, start, &gamedata->textures.enemy);
+}
+
+void	write_entities(t_gamedata *gamedata, t_2int *start)
+{
+	int		i;
+
+	write_entity(gamedata, &gamedata->player, start,
+													&gamedata->textures.player);
+	i = 0;
+	while (i < gamedata->enemy.amount)
+	{
+		write_enemy(gamedata, &gamedata->enemy.array[i], start, 
+											&gamedata->window.viewable_mapsize);
+		i++;
 	}
 }
 
 void	make_frame(t_gamedata* gamedata)
 {
 	t_2int		loc;
+	t_2int		start_map_to_show;
 	int			j;
 	int			i;
 
-	set_map_to_show(gamedata);
+	start_map_to_show = get_start(gamedata->mapinfo.size, gamedata->window.viewable_mapsize, gamedata->player.pos);
+	set_map_to_show(gamedata, start_map_to_show);
 	j = 0;
 	while (j < gamedata->window.viewable_mapsize.y)
 	{
@@ -159,5 +178,6 @@ void	make_frame(t_gamedata* gamedata)
 		}
 		j++;
 	}
+	write_entities(gamedata, &start_map_to_show);
 	mlx_put_image_to_window(gamedata->mlx, gamedata->window.frame, gamedata->img.img, 0, 0);
 }

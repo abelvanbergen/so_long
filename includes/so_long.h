@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:26:10 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/24 06:54:46 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/24 14:17:36 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include "libft.h"
 # include "get_next_line.h"
 
-# define VALID_MAP_CHAR "10CEP<>^v"
+# define VALID_MAP_CHAR "10CEP<>^v-|+"
 # define PLAYER_CHAR 'P'
 # define COLLECTIBLE_CHAR 'C'
 # define EXIT_CHAR 'E'
@@ -36,8 +36,8 @@
 /*
 ** Must be odd numbers, so that the player can stand in the middle
 */
-# define VIEWABLE_WITDH 10
-# define VIEWABLE_HEIGHT 10
+# define VIEWABLE_WITDH 22
+# define VIEWABLE_HEIGHT 30
 /*
 ** Must be a power of 2
 */
@@ -50,6 +50,9 @@
 # define UNBLOCKED_EXIT_TEXTURE "textures/redbrick.xpm"
 # define FLOOR_TEXTURE "textures/bluestone.xpm"
 # define ENEMY_TEXTURE "textures/dog.xpm"
+# define PATH_HORIZONTAL "textures/purplestone.xpm"
+# define PATH_VERTICAL "textures/purplestone.xpm"
+# define PATH_CROSSING "textures/purplestone.xpm"
 
 # define W_KEY 13
 # define S_KEY 1
@@ -66,7 +69,8 @@ typedef enum	e_tile_sides
 	front,
 	back,
 	right,
-	left
+	left,
+	current
 }				t_tile_sides;
 
 typedef	struct	s_2int
@@ -132,6 +136,9 @@ typedef struct	s_textures
 	t_imginfo	blocked_exit;
 	t_imginfo	enemy;
 	t_imginfo	floor;
+	t_imginfo	path_vertical;
+	t_imginfo	path_horizontal;
+	t_imginfo	path_crossing;
 }				t_textures;
 
 typedef struct	s_mapinfo
@@ -177,7 +184,8 @@ void	vla_shrink(t_vla *vla);
 void	vla_add_line_to_array(t_vla* vla, char *line);
 void	vla_init(t_vla* vla);
 
-void	move_player(t_gamedata *gamedata, int dx, int dy);
+void	move_player(t_entity *player, t_mapinfo* mapinfo);
+void	move_enemies(char **map, t_enemy *enemy);
 
 int		key_press(int keycode, t_move *move);
 

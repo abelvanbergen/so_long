@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 12:18:56 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/22 18:21:14 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/24 11:46:39 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,7 @@ void	get_textures(t_textures* textures, void *mlx)
 	get_texture(mlx, &textures->blocked_exit, BLOCKED_EXIT_TEXTURE, false);
 	get_texture(mlx, &textures->enemy, ENEMY_TEXTURE, true);
 	get_texture(mlx, &textures->floor, FLOOR_TEXTURE, false);
+	get_texture(mlx, &textures->path_horizontal, PATH_HORIZONTAL, false);
+	get_texture(mlx, &textures->path_vertical, PATH_VERTICAL, false);
+	get_texture(mlx, &textures->path_crossing, PATH_CROSSING, false);
 }
