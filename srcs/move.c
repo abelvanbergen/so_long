@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 20:25:29 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/23 20:18:19 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/24 07:24:20 by abelfrancis   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,64 @@ void	move_player(t_entity *player, t_mapinfo* mapinfo)
 	player->pos.y += player->delta.y;
 }
 
-void	set_enemy_delta_for_crossing(t_entity *enemy, t_mapinfo* mapinfo)
+void	turn(t_2int *delta, t_tile_sides direction)
 {
-	char	current_tile;
-	char	delta_tile;
+	int	temp;
+
+	if (direction == back)
+	{
+		delta->x *= -1;
+		delta->y *= -1;
+	}
+	else if (direction == right)
+	{
+		temp = delta->x;
+		delta->x = delta->y * -1;
+		delta->y = temp;
+	}
+	else
+	{
+		temp = delta->x;
+		delta->x = delta->y;
+		delta->y = temp * -1;
+	}
+}
+
+char*	set_sides(t_entity *enemy, t_mapinfo* mapinfo)
+{
 	t_2int	e_pos;
 	t_2int	e_delta;
-	
+	char	tiles[4];
+
 	e_pos = enemy->pos;
 	e_delta = enemy->delta;
-	delta_tile = mapinfo->map[e_pos.x + 2 * e_delta.x][e_pos.y + 2 * e_delta.y];
-	if (delta_tile = )
+	tiles[front] = mapinfo->map[e_pos.x + e_delta.x][e_pos.y + e_delta.y];
+	tiles[back] = mapinfo->map[e_pos.x - e_delta.x][e_pos.y - e_delta.y];
+	turn(&e_delta, right);
+	tiles[right] = mapinfo->map[e_pos.x + e_delta.x][e_pos.y + e_delta.y];
+	tiles[left] = mapinfo->map[e_pos.x - e_delta.x][e_pos.y - e_delta.y];
+	return tiles;
+}
+
+void	set_enemy_delta_for_crossing(t_entity *enemy, t_mapinfo* mapinfo)
+{
+	char	tile[4];
+	char	tile_neighbours;
+	
+	tile = set_sides(enemy, mapinfo);
+	if (tile[back] == ENEMY_PATH_HORIZONTAL)
+		tile_neighbours = ENEMY_PATH_VERTICAL;
+	else
+		tile_neighbours = ENEMY_PATH_HORIZONTAL;
+	if (tile[front] == tile[back])
+		return ;
+	if ((tile[right] == tile_neighbours && tile[left] == tile_neighbours) ||
+			(tile[right] != tile_neighbours && tile[left] != tile_neighbours))
+		turn(&enemy->delta, back);
+	else if (tile[right] == tile_neighbours)
+		turn(&enemy->delta, right);
+	else
+		turn(&enemy->delta, right);
 }
 
 void	move_enemy(t_entity *enemy, t_mapinfo* mapinfo)
@@ -62,48 +109,22 @@ void	move_enemy(t_entity *enemy, t_mapinfo* mapinfo)
 	if (d_tile != c_tile)
 	{
 		if (c_tile == ENEMY_PATH_CROSSING)
-			set_enemy_delta_for_crossing(enemy, mapinfo)
+			set_enemy_delta_for_crossing(enemy, mapinfo);
 		else
-		{
-			enemy->delta.x *= -1;
-			enemy->delta.y *= -1;
-		}
-		
+			turn(&enemy->delta, back);	
 	}
-	else if (d_tile != c_tile)
-
-	else
-	{
-		
-	}
-	
+	enemy->pos.x += enemy->delta.x;
+	enemy->pos.y += enemy->delta.y;	
 }
 
-move_enemies(char **map, t_enemy *enemy)
+void	move_enemies(char **map, t_enemy *enemy)
 {
 	int	i;
 
 	i = 0;
 	while (i < enemy->amount)
 	{
-		
+		move_enemy(&enemy->array[i], );
+		i++;
 	}
 }
-
-// void	move(t_gamedata* gamedata, int dx, int dy)
-// {
-// 	// t_2int	pos;
-
-// 	// pos.y = 0;
-// 	// while (gamedata->map[pos.y] != NULL)
-// 	// {
-// 	// 	pos.x = 0;
-// 	// 	while (gamedata->map[pos.y][pos.x] != '\0')
-// 	// 	{
-// 	// 		if (gamedata->map[pos.y][pos.x] == 'P')
-// 	// 			move_player(t_gamedata* )
-// 	// 		pos.x++;
-// 	// 	}
-// 	// 	pos.y++;
-// 	// }
-// }

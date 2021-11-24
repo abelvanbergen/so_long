@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:26:10 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/23 20:01:06 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/24 06:54:46 by abelfrancis   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 # define ENEMY_CHAR_RIGHT '>'
 # define ENEMY_PATH_VERTICAL '|'
 # define ENEMY_PATH_HORIZONTAL '-'
-# define ENEMY_CROSSING '+'
+# define ENEMY_PATH_CROSSING '+'
 # define ENEMY_CHARS "<>^v"
 
 /*
@@ -61,6 +61,13 @@
 # define RIGHT_ARROW_KEY 124
 # define ESC_KEY 53
 
+typedef enum	e_tile_sides
+{
+	front,
+	back,
+	right,
+	left
+}				t_tile_sides;
 
 typedef	struct	s_2int
 {
