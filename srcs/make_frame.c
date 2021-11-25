@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/22 11:52:22 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/24 11:44:04 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/25 19:37:26 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,10 @@ unsigned int	get_color_from_texture(t_imginfo *text, int x, int y)
 void	write_texture_to_image(t_imginfo *img, t_imginfo *texture, t_2int start,
 														int max_texture_size)
 {
-	float	step;
-	int		i;
-	int		j;
-	int		color;
+	float			step;
+	int				i;
+	int				j;
+	unsigned int	color;
 
 	step = (float)texture->img_width / (float)max_texture_size;
 	j = 0;
@@ -39,8 +39,8 @@ void	write_texture_to_image(t_imginfo *img, t_imginfo *texture, t_2int start,
 		while (i < max_texture_size)
 		{
 			color = get_color_from_texture(texture, (int)(i * step), (int)(j * step));
-			if ((color & 0x00FFFFFF) != 0 || texture->is_sprite == false)
-			my_mlx_pixel_put(img, i + start.x, j + start.y, color);
+			if (color != 0xFF000000 || texture->is_sprite == false)
+				my_mlx_pixel_put(img, i + start.x, j + start.y, color);
 			i++;
 		}
 		j++;
@@ -99,14 +99,14 @@ void	texture_jumptable(t_gamedata *gamedata, t_2int loc, char c)
 {
 	const int	max_texture_size = gamedata->window.max_texture_size;
 
-	if (c == WALL_CHAR)
-		write_texture_to_image(&gamedata->img, &gamedata->textures.wall, loc, max_texture_size);
-	else if (c == ENEMY_PATH_HORIZONTAL)
+	if (c == ENEMY_PATH_HORIZONTAL)
 		write_texture_to_image(&gamedata->img, &gamedata->textures.path_horizontal, loc, max_texture_size);
 	else if (c == ENEMY_PATH_VERTICAL)
 		write_texture_to_image(&gamedata->img, &gamedata->textures.path_vertical, loc, max_texture_size);
 	else if (c == ENEMY_PATH_CROSSING)
 		write_texture_to_image(&gamedata->img, &gamedata->textures.path_crossing, loc, max_texture_size);
+	else if (c == FLOOR_VARIATION_CHAR)
+		write_texture_to_image(&gamedata->img, &gamedata->textures.floor_variation, loc, max_texture_size);
 	else
 	{
 		write_texture_to_image(&gamedata->img, &gamedata->textures.floor, loc, max_texture_size);
@@ -116,6 +116,8 @@ void	texture_jumptable(t_gamedata *gamedata, t_2int loc, char c)
 			write_texture_to_image(&gamedata->img, &gamedata->textures.unblocked_exit, loc, max_texture_size);
 		else if (c == EXIT_CHAR)
 			write_texture_to_image(&gamedata->img, &gamedata->textures.blocked_exit, loc, max_texture_size);
+		else if (c == WALL_CHAR)
+			write_texture_to_image(&gamedata->img, &gamedata->textures.wall, loc, max_texture_size);
 	}
 }
 
@@ -138,7 +140,14 @@ void	write_enemy(t_gamedata *gamedata, t_entity *enemy, t_2int *start, t_2int *v
 		return ;
 	if (enemy->pos.y < start->y || enemy->pos.y >= start->y + viewmap_size->y)
 		return ;
-	write_entity(gamedata, enemy, start, &gamedata->textures.enemy);
+	if (enemy->delta.x == 1)
+		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[text_right]);
+	else if (enemy->delta.x == -1)
+		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[text_left]);
+	else if (enemy->delta.y == 1)
+		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[text_down]);
+	else
+		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[text_up]);
 }
 
 void	write_entities(t_gamedata *gamedata, t_2int *start)

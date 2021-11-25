@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 13:54:12 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/22 18:52:25 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/25 20:11:35 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,5 +86,6 @@ void	get_window(t_window* window, void* mlx, t_2int mapsize)
 	window->frame = mlx_new_window(mlx, windowsize.x, windowsize.y, "so_long");
 	if (window->frame == NULL)
 		exit_with_message("mlx_new_window failed", 1);
+	window->frame_rate = 0;
 	window->map_to_show = get_map_to_show(window->viewable_mapsize);
 }

@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:25:54 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/24 11:28:44 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/25 20:11:27 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,13 @@ int	process_movement(t_gamedata* gamedata)
 		else if (gamedata->move.right == true)
 			gamedata->player.delta.x = 1;
 		ft_bzero(&gamedata->move, sizeof(t_move));
-		move_player(&gamedata->player, &gamedata->mapinfo);
-		move_enemies(gamedata->mapinfo.map, &gamedata->enemy);
-		make_frame(gamedata);
+		move_player(&gamedata->player, &gamedata->enemy, &gamedata->mapinfo);
 	}
+	gamedata->window.frame_rate++;
+	if (gamedata->window.frame_rate % MOVEMENT_SPEED == 0)
+		move_enemies(gamedata->mapinfo.map, &gamedata->enemy,
+														&gamedata->player);
+	make_frame(gamedata);
 	return (0);
 }
 
@@ -41,9 +44,9 @@ void	get_game_data(t_gamedata *gamedata, char *filename)
 	gamedata->mlx = mlx_init();
 	if (gamedata->mlx == NULL)
 		exit_with_message("mlx_init failed", 1);
+	get_textures(&gamedata->textures, gamedata->mlx);
 	get_window(&gamedata->window, gamedata->mlx, gamedata->mapinfo.size);
 	get_image(&gamedata->img, gamedata->mlx, gamedata->window.viewable_mapsize, gamedata->window.max_texture_size);
-	get_textures(&gamedata->textures, gamedata->mlx);
 	ft_bzero(&gamedata->move, sizeof(t_move));
 }
 

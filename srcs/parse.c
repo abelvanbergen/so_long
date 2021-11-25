@@ -6,11 +6,13 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 08:48:08 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/23 19:44:00 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/25 20:09:15 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h> //
+#include <stdlib.h>
+#include <time.h>
 #include <fcntl.h>
 #include "so_long.h"
 
@@ -49,7 +51,7 @@ char	set_enemy(t_entity *enemy, char sort, t_2int pos)
 	return (new_tile);
 }
 
-void	set_entities(t_entity *player, t_enemy *enemy, char **map)
+void	set_entities(t_entity *player, t_bot *enemy, char **map)
 {
 	t_2int	pos;
 	int		enemey_index;
@@ -119,6 +121,34 @@ static char	**read_map(char *filename)
 	return vla.array;
 }
 
+void	set_floor_variation(char **map)
+{
+	unsigned int	index_to_place_flower;
+	t_2int			loc;
+	int				floor_index;
+
+	loc.y = 0;
+	floor_index = 0;
+	srand((unsigned) time(0));
+	while (map[loc.y] != NULL)
+	{
+		loc.x = 0;
+		while (map[loc.y][loc.x] != '\0')
+		{
+			if (floor_index % DENSITIE_FLOOR_VAR == 0)
+				index_to_place_flower = rand() % DENSITIE_FLOOR_VAR;
+			if (map[loc.y][loc.x] == FLOOR_CHAR)
+			{
+				if (floor_index % DENSITIE_FLOOR_VAR == index_to_place_flower)
+					map[loc.y][loc.x] = FLOOR_VARIATION_CHAR;
+				floor_index++;
+			}
+			loc.x++;
+		}
+		loc.y++;
+	}
+}
+
 void	parse_map(char *filename, t_gamedata *gamedata)
 {
 	gamedata->mapinfo.map = read_map(filename);
@@ -127,9 +157,8 @@ void	parse_map(char *filename, t_gamedata *gamedata)
 	if (gamedata->mapinfo.size.y == 0)
 		exit_with_message("file is empty", 1);
 	map_validation(gamedata->mapinfo.map, &gamedata->mapinfo.tokens,
-													&gamedata->enemy.amount);
+									&gamedata->enemy.amount);
 	gamedata->enemy.array = malloc(sizeof(t_entity) * gamedata->enemy.amount);
 	set_entities(&gamedata->player, &gamedata->enemy, gamedata->mapinfo.map);
-	for(int i = 0; i < gamedata->enemy.amount; i++)
-		printf("enemy %i:\npos %d/%d\ndelta %d/%d\n------\n", i, gamedata->enemy.array[i].pos.x, gamedata->enemy.array[i].pos.y, gamedata->enemy.array[i].delta.x, gamedata->enemy.array[i].delta.y);
+	set_floor_variation(gamedata->mapinfo.map);
 }

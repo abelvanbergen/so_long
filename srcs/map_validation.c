@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 10:30:40 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/23 19:10:56 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/25 19:54:59 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ void	get_map_validation_info(t_map_validation* info, char **map)
 				info->amount_exit++;
 			else if (ft_strchr(ENEMY_CHARS, map[j][i]) != NULL)
 				info->amount_enemy++;
+			else if (map[j][i] == FLOOR_CHAR)
+				info->amount_floor++;
 			i++;
 		}
 		if (ft_strlen(map[j]) != info->map_len)
