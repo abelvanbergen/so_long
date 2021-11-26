@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 20:25:29 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/25 20:13:55 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/26 09:45:58 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	turn(t_2int *delta, t_tile_sides direction)
 		delta->x = delta->y * -1;
 		delta->y = temp;
 	}
-	else
+	else if (direction == left)
 	{
 		temp = delta->x;
 		delta->x = delta->y;
@@ -94,13 +94,13 @@ void	move_player(t_entity *player, t_bot *enemies, t_mapinfo* mapinfo)
 	player->pos.y += player->delta.y;
 }
 
-char*	set_sides(char *tiles, t_entity *enemy, char **map)
+char*	set_sides(char *tiles, t_entity *entity, char **map)
 {
 	t_2int	e_pos;
 	t_2int	e_delta;
 
-	e_pos = enemy->pos;
-	e_delta = enemy->delta;
+	e_pos = entity->pos;
+	e_delta = entity->delta;
 	tiles[current] = get_tile(e_pos.x, e_pos.y, map);
 	tiles[front] = get_tile(e_pos.x + e_delta.x, e_pos.y + e_delta.y, map);
 	tiles[back] = get_tile(e_pos.x - e_delta.x, e_pos.y - e_delta.y, map);
@@ -186,18 +186,57 @@ void	move_enemies(char **map, t_bot *enemies, t_entity *player)
 	}
 }
 
-void	move_pokemon(char **map, t_bot *pokemon, int frame_rate)
+void	move_pokemon_away_from_player(char **map, t_entity *pokemon)
+{
+	char	tile[5];
+
+	set_sides(tile, pokemon, map);
+	if (tile[current] == tile[back])
+		turn(&pokemon->delta, back);
+	else if (tile[current] == tile[right])
+		turn(&pokemon->delta, right);
+	else
+		turn(&pokemon->delta, left);
+}
+
+void	move_pokemon(t_entity *pokemon, t_gamedata *gamedata, int pokemon_id)
+{
+	char			tile[5];
+	t_tile_sides	order;
+	int				i;
+	
+	order = gamedata->window.frame_rate + gamedata->move_counter + pokemon_id;
+	set_sides(tile, pokemon, gamedata->mapinfo.map);
+	i = 0;
+	while (i < 5)
+	{
+		if (tile[current] == tile[(i + order) % 5])
+		{
+			turn(&pokemon->delta, (i + order) % 5);
+			break ;
+		}
+		i++;
+	}
+	if (pokemon->pos.x + pokemon->delta.x == gamedata->player.pos.x && pokemon->pos.y + pokemon->delta.y == gamedata->player.pos.y)
+		move_pokemon_away_from_player(gamedata->mapinfo.map, pokemon);
+	tile[front] = get_tile(pokemon->pos.x + pokemon->delta.x, pokemon->pos.y + pokemon->delta.y, gamedata->mapinfo.map);
+	if (tile[front] == tile[current])
+	{
+		pokemon->pos.x += pokemon->delta.x;
+		pokemon->pos.y += pokemon->delta.y;
+	}
+}
+
+void	move_pokemany(t_gamedata *gamedata, t_bot *pokemany)
 {
 	int			i;
 	t_entity	*pokemon;
 
 	i = 0;
-	while (i < enemies->amount)
+	while (i < pokemany->amount)
 	{
-		enemy = &enemies->array[i];
-		move_enemy(enemy, map, enemies);
-		if (enemy->pos.x == player->pos.x && enemy->pos.y == player->pos.y)
-			exit(0); // enemy steps on player
+		pokemon = &pokemany->array[i];
+		move_pokemon(pokemon, gamedata, i);
 		i++;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/22 11:52:22 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/25 19:37:26 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/26 12:58:58 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,13 +141,13 @@ void	write_enemy(t_gamedata *gamedata, t_entity *enemy, t_2int *start, t_2int *v
 	if (enemy->pos.y < start->y || enemy->pos.y >= start->y + viewmap_size->y)
 		return ;
 	if (enemy->delta.x == 1)
-		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[text_right]);
+		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[enemy->texture_id][text_right]);
 	else if (enemy->delta.x == -1)
-		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[text_left]);
+		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[enemy->texture_id][text_left]);
 	else if (enemy->delta.y == 1)
-		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[text_down]);
+		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[enemy->texture_id][text_down]);
 	else
-		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[text_up]);
+		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[enemy->texture_id][text_up]);
 }
 
 void	write_entities(t_gamedata *gamedata, t_2int *start)

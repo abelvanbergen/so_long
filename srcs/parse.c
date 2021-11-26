@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 08:48:08 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/25 20:09:15 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/26 12:56:16 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ char	set_enemy(t_entity *enemy, char sort, t_2int pos)
 		enemy->delta.x = 1;
 	}
 	set_entity(enemy, pos);
+	enemy->texture_id = rand() % DIFFERENT_ENEMIES;
 	return (new_tile);
 }
 
@@ -129,7 +130,6 @@ void	set_floor_variation(char **map)
 
 	loc.y = 0;
 	floor_index = 0;
-	srand((unsigned) time(0));
 	while (map[loc.y] != NULL)
 	{
 		loc.x = 0;
@@ -151,14 +151,19 @@ void	set_floor_variation(char **map)
 
 void	parse_map(char *filename, t_gamedata *gamedata)
 {
+	t_map_validation	validation;
+	
+	srand((unsigned) time(0));
 	gamedata->mapinfo.map = read_map(filename);
 	gamedata->mapinfo.size.x = ft_strlen(gamedata->mapinfo.map[0]);
 	gamedata->mapinfo.size.y = ft_arraylen(gamedata->mapinfo.map);
 	if (gamedata->mapinfo.size.y == 0)
 		exit_with_message("file is empty", 1);
-	map_validation(gamedata->mapinfo.map, &gamedata->mapinfo.tokens,
-									&gamedata->enemy.amount);
+	map_validation(gamedata->mapinfo.map, &validation);
 	gamedata->enemy.array = malloc(sizeof(t_entity) * gamedata->enemy.amount);
+	gamedata->move_counter = 0;
+	gamedata->mapinfo.tokens = validation.amount_collectibles;
+	gamedata->enemy.amount = validation.amount_enemy;
 	set_entities(&gamedata->player, &gamedata->enemy, gamedata->mapinfo.map);
 	set_floor_variation(gamedata->mapinfo.map);
 }
