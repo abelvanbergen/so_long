@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:26:10 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/26 14:05:55 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/28 21:35:56 by abelfrancis   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,26 +18,10 @@
 # include "libft.h"
 # include "get_next_line.h"
 
-# define VALID_MAP_CHAR "10CEP<>^v-|+.#"
-# define PLAYER_CHAR 'P'
-# define COLLECTIBLE_CHAR 'C'
-# define EXIT_CHAR 'E'
-# define WALL_CHAR '1'
-# define FLOOR_CHAR '0'
-# define ENEMY_CHAR_UP '^'
-# define ENEMY_CHAR_DOWN 'v'
-# define ENEMY_CHAR_LEFT '<'
-# define ENEMY_CHAR_RIGHT '>'
-# define ENEMY_PATH_VERTICAL '|'
-# define ENEMY_PATH_HORIZONTAL '-'
-# define ENEMY_PATH_CROSSING '+'
-# define ENEMY_CHARS "<>^v"
-# define POKEMON_WALK_CHARS ".#"
-# define POKEMON_WALK_SHRUB_CHAR '#'
-# define POKEMON_WALK_PLAIN_CHAR '.'
-# define FLOOR_VARIATION_CHAR '2'
-# define DIFFERENT_ENEMIES 2
+
 /*
+** So long config --------------------------------------------------------------
+**
 ** Must be odd numbers, so that the player can stand in the middle
 */
 # define VIEWABLE_WITDH 20
@@ -46,26 +30,109 @@
 ** Must be a power of 2
 */
 # define VIEWABLE_TEXTURE_SIZE 128
+/*
+** for every {DENSITIE_SHROB} floor there wil be 1 flower
+** the bigger the number, the less flowers
+*/
+# define DENSITIE_FLOOR_VAR 25
+/*
+** for every {MOVEMENTSPEED} frame the entities will move
+** the bigger the number, the slower the enemy
+*/
+# define MOVEMENT_SPEED_ENEMY 25
+# define MOVEMENT_SPEED_POKEMON 39
+/*
+**==============================================================================
+*/
 
+
+
+/*
+** textures --------------------------------------------------------------------
+**
+** map
+*/
 # define WALL_TEXTURE "textures/pokebal/stone.xpm"
-# define PLAYER_TEXTURE "textures/pokebal/pikachu.xpm"
-# define COLLECTIBLE_TEXTURE "textures/pokebal/ball.xpm"
-# define BLOCKED_EXIT_TEXTURE "textures/exit/hole.xpm"
-# define UNBLOCKED_EXIT_TEXTURE "textures/exit/hole_ladder.xpm"
 # define FLOOR_TEXTURE "textures/floor/grass.xpm"
 # define FLOOR_VARIATION_TEXTURE "textures/floor/flower.xpm"
-# define ENEMIES_TEXTURE_LOC "textures/enemy/"
-# define POKEMANY_TEXTURES_LOC "textures/"
-# define POKEMANY {"trainer/"}
-// # define ENEMY_LEFT_TEXTURE "textures/trainer/trainer_left.xpm"
-// # define ENEMY_RIGHT_TEXTURE "textures/trainer/trainer_right.xpm"
-// # define ENEMY_UP_TEXTURE "textures/trainer/trainer_up.xpm"
-// # define ENEMY_DOWN_TEXTURE "textures/trainer/trainer_down.xpm"
+
+# define BLOCKED_EXIT_TEXTURE "textures/exit/hole.xpm"
+# define UNBLOCKED_EXIT_TEXTURE "textures/exit/hole_ladder.xpm"
+
+# define COLLECTIBLE_TEXTURE "textures/pokebal/ball.xpm"
+
 # define PATH_HORIZONTAL "textures/path/horizontal.xpm"
 # define PATH_VERTICAL "textures/path/vertical.xpm"
 # define PATH_CROSSING "textures/path/crossing.xpm"
-# define SHRUB_TEXTURE "textures/path/crossing.xpm" // juiste texture
 
+# define SHRUB_TEXTURE "textures/path/crossing.xpm" // juiste texture
+/*
+** player/trainer
+*/
+# define PLAYER_TEXTURE_LOC "textures/trainer/"
+/*
+** enemy
+*/
+# define ENEMIES_TEXTURE_LOC "textures/enemy/"
+# define DIFFERENT_ENEMIES 2
+# define ENEMIES "women/ men/"
+/*
+** Pokemon
+*/
+# define POKEMANY_TEXTURES_LOC "textures/pokemany/"
+# define DIFFERENT_POKEMON 3
+# define POKEMANY "diglett/ eevee/ growlithe/"
+/*
+** Utils
+*/
+# define TEXTURE_DIRECTIONS "up.xpm right.xpm down.xpm left.xpm current.xpm"
+/*
+**==============================================================================
+*/
+
+
+
+/*
+** textures --------------------------------------------------------------------
+** map
+*/
+# define VALID_MAP_CHAR "10CEP<>^v-|+.#"
+
+# define WALL_CHAR '1'
+# define FLOOR_CHAR '0'
+# define PLAYER_CHAR 'P'
+# define COLLECTIBLE_CHAR 'C'
+# define EXIT_CHAR 'E'
+# define FLOOR_VARIATION_CHAR '2'
+/*
+** enemy
+*/
+# define ENEMY_CHARS "<>^v"
+# define ENEMY_CHAR_UP '^'
+# define ENEMY_CHAR_DOWN 'v'
+# define ENEMY_CHAR_LEFT '<'
+# define ENEMY_CHAR_RIGHT '>'
+/*
+** path
+*/
+# define ENEMY_PATH_VERTICAL '|'
+# define ENEMY_PATH_HORIZONTAL '-'
+# define ENEMY_PATH_CROSSING '+'
+/*
+** pokemon
+*/
+# define POKEMON_WALK_CHARS ".#"
+# define POKEMON_WALK_SHRUB_CHAR '#'
+# define POKEMON_WALK_PLAIN_CHAR '.'
+/*
+**==============================================================================
+*/
+
+
+
+/*
+** Keycodes --------------------------------------------------------------------
+*/
 # define W_KEY 13
 # define S_KEY 1
 # define A_KEY 0
@@ -75,20 +142,18 @@
 # define LEFT_ARROW_KEY 123
 # define RIGHT_ARROW_KEY 124
 # define ESC_KEY 53
+/*
+**==============================================================================
+*/
+
+
 
 /*
-** for every {DENSITIE_SHROB} floor there wil be 1 flower
-** the bigger the number, the less flowers
+** enums -----------------------------------------------------------------------
 */
-# define DENSITIE_FLOOR_VAR 25
-
 /*
-** for every {MOVEMENTSPEED} frame the entities will move
-** the bigger the number, the slower the enemy
+** used to get the right texture by the direction
 */
-# define MOVEMENT_SPEED 25
-
-
 typedef enum	e_texture_dir
 {
 	text_up,
@@ -97,7 +162,9 @@ typedef enum	e_texture_dir
 	text_left,
 	text_current
 }				t_texture_dir;
-
+/*
+** used by the movement of the bots
+*/
 typedef enum	e_tile_sides
 {
 	front,
@@ -106,6 +173,9 @@ typedef enum	e_tile_sides
 	left,
 	current
 }				t_tile_sides;
+/*
+**==============================================================================
+*/
 
 typedef	struct	s_2int
 {
@@ -167,12 +237,12 @@ typedef struct 	s_window
 typedef struct	s_textures
 {
 	t_imginfo	wall;
-	t_imginfo	player;
+	t_imginfo	*player;
 	t_imginfo	collectible;
 	t_imginfo	unblocked_exit;
 	t_imginfo	blocked_exit;
 	t_imginfo	**enemy;
-	t_imginfo	*pokemany;
+	t_imginfo	**pokemany;
 	t_imginfo	floor;
 	t_imginfo	floor_variation;
 	t_imginfo	path_vertical;
@@ -192,6 +262,7 @@ typedef struct	s_entity
 	t_2int		pos;
 	t_2int		delta;
 	int			texture_id;
+	bool		moved;
 }				t_entity;
 
 typedef struct	s_bot
@@ -211,9 +282,11 @@ typedef struct	s_gamedata
 	t_entity	player;
 	int			move_counter;
 	t_bot		enemy;
+	t_bot		pokemany;
 }				t_gamedata;
 
 void	exit_with_message(char *message, int exitcode);
+void	exit_with_2_messages(char *message1, char *message2, int exitcode);
 
 int		str_is_only_char(char *str, char c);
 int		ft_arraylen(char **array);
@@ -227,6 +300,7 @@ void	vla_init(t_vla* vla);
 
 void	move_player(t_entity *player, t_bot *enemies, t_mapinfo* mapinfo);
 void	move_enemies(char **map, t_bot *enemies, t_entity *player);
+void	move_pokemany(t_gamedata *gamedata, t_bot *pokemany);
 
 int		key_press(int keycode, t_move *move);
 

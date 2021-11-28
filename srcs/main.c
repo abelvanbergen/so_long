@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:25:54 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/26 12:56:48 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/27 16:36:42 by abelfrancis   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,14 @@ int	process_movement(t_gamedata* gamedata)
 			gamedata->player.delta.x = 1;
 		ft_bzero(&gamedata->move, sizeof(t_move));
 		move_player(&gamedata->player, &gamedata->enemy, &gamedata->mapinfo);
+		gamedata->move_counter++;
 	}
 	gamedata->window.frame_rate++;
-	if (gamedata->window.frame_rate % MOVEMENT_SPEED == 0)
+	if (gamedata->window.frame_rate % MOVEMENT_SPEED_ENEMY == 0)
 		move_enemies(gamedata->mapinfo.map, &gamedata->enemy,
 														&gamedata->player);
+	if (gamedata->window.frame_rate % MOVEMENT_SPEED_POKEMON == 0)
+		move_pokemany(gamedata, &gamedata->pokemany);
 	make_frame(gamedata);
 	return (0);
 }
@@ -58,8 +61,8 @@ int main(int ac, char **av)
 		exit_with_message\
 			("Not the right amount of arguments\nUse [./solong file_name]", 1);
 	get_game_data(&gamedata, av[1]);
-	// make_frame(&gamedata);
-	// mlx_hook(gamedata.window.frame, 2, 1L << 0, key_press, &gamedata.move);
-	// mlx_loop_hook(gamedata.mlx, process_movement, &gamedata);
-	// mlx_loop(gamedata.mlx);
+	make_frame(&gamedata);
+	mlx_hook(gamedata.window.frame, 2, 1L << 0, key_press, &gamedata.move);
+	mlx_loop_hook(gamedata.mlx, process_movement, &gamedata);
+	mlx_loop(gamedata.mlx);
 }

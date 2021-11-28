@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 20:25:29 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/26 09:45:58 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/27 16:28:37 by abelfrancis   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	turn(t_2int *delta, t_tile_sides direction)
 	}
 }
 
-bool	is_next_pos_enemy(t_bot *enemies, t_entity *entity, bool change_direction)
+bool	is_next_pos_entity(t_bot *entities, t_entity *entity, bool change_direction)
 {
 	int		i;
 	t_2int	next_pos;
@@ -50,13 +50,13 @@ bool	is_next_pos_enemy(t_bot *enemies, t_entity *entity, bool change_direction)
 	i = 0;
 	next_pos.x = entity->pos.x + entity->delta.x;
 	next_pos.y = entity->pos.y + entity->delta.y;
-	while (i < enemies->amount)
+	while (i < entities->amount)
 	{
-		if (next_pos.x == enemies->array[i].pos.x &&
-										next_pos.y == enemies->array[i].pos.y)
+		if (next_pos.x == entities->array[i].pos.x &&
+										next_pos.y == entities->array[i].pos.y)
 		{
-			if (change_direction == true && is_face_to_face(entity, &enemies->array[i]))
-				turn(&enemies->array[i].delta, back);
+			if (change_direction == true && is_face_to_face(entity, &entities->array[i]))
+				turn(&entities->array[i].delta, back);
 			return (true);
 		}
 		i++;
@@ -80,7 +80,7 @@ void	move_player(t_entity *player, t_bot *enemies, t_mapinfo* mapinfo)
 		return ;
 	if (d_loc == EXIT_CHAR && mapinfo->tokens == 0)
 		exit(0); // mlx opruimen? en aparte geslaagde exit
-	if (is_next_pos_enemy(enemies, player, false) == true)
+	if (is_next_pos_entity(enemies, player, false) == true)
 		exit(0); //moved against a enemy, how to exit?
 	//checken of ie niet tegen een enemy aan loopt, ook andersom nog maken
 	else if (d_loc == COLLECTIBLE_CHAR)
@@ -159,7 +159,7 @@ void	move_enemy(t_entity *cur_enemy, char **map, t_bot *enemies)
 		set_enemy_delta_for_crossing(tile, cur_enemy);
 	else if (tile[front] != tile[current] && tile[front] != ENEMY_PATH_CROSSING)
 		turn(&cur_enemy->delta, back);	
-	if (is_next_pos_enemy(enemies, cur_enemy, true))
+	if (is_next_pos_entity(enemies, cur_enemy, true))
 		turn(&cur_enemy->delta, back);
 	tile[front] = get_tile(cur_enemy->pos.x + cur_enemy->delta.x,
 									cur_enemy->pos.y + cur_enemy->delta.y, map);
@@ -210,6 +210,7 @@ void	move_pokemon(t_entity *pokemon, t_gamedata *gamedata, int pokemon_id)
 	i = 0;
 	while (i < 5)
 	{
+		printf("order: %d\n", order);
 		if (tile[current] == tile[(i + order) % 5])
 		{
 			turn(&pokemon->delta, (i + order) % 5);
@@ -218,13 +219,19 @@ void	move_pokemon(t_entity *pokemon, t_gamedata *gamedata, int pokemon_id)
 		i++;
 	}
 	if (pokemon->pos.x + pokemon->delta.x == gamedata->player.pos.x && pokemon->pos.y + pokemon->delta.y == gamedata->player.pos.y)
+	{
+		printf("hij komt hier niet in\n");
 		move_pokemon_away_from_player(gamedata->mapinfo.map, pokemon);
+	}
 	tile[front] = get_tile(pokemon->pos.x + pokemon->delta.x, pokemon->pos.y + pokemon->delta.y, gamedata->mapinfo.map);
-	if (tile[front] == tile[current])
+	if (tile[front] == tile[current] && !is_next_pos_entity(&gamedata->pokemany, pokemon, false))
 	{
 		pokemon->pos.x += pokemon->delta.x;
 		pokemon->pos.y += pokemon->delta.y;
+		pokemon->moved = true;
 	}
+	else
+		pokemon->moved = false;
 }
 
 void	move_pokemany(t_gamedata *gamedata, t_bot *pokemany)

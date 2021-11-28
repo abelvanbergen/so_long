@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/22 11:52:22 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/26 12:58:58 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/28 21:38:10 by abelfrancis   ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,16 +150,44 @@ void	write_enemy(t_gamedata *gamedata, t_entity *enemy, t_2int *start, t_2int *v
 		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[enemy->texture_id][text_up]);
 }
 
+void	write_pokemany(t_gamedata *gamedata, t_entity *pokemon, t_2int *start, t_2int *viewmap_size)
+{
+	if (pokemon->pos.x < start->x || pokemon->pos.x >= start->x + viewmap_size->x)
+		return ;
+	if (pokemon->pos.y < start->y || pokemon->pos.y >= start->y + viewmap_size->y)
+		return ;
+	if (pokemon->moved == true)
+	{
+		if (pokemon->delta.x == 1)
+			write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_right]);
+		else if (pokemon->delta.x == -1)
+			write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_left]);
+		else if (pokemon->delta.y == 1)
+			write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_down]);
+		else
+			write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_up]);
+	}
+	else
+		write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_current]);
+}
+
 void	write_entities(t_gamedata *gamedata, t_2int *start)
 {
 	int		i;
 
 	write_entity(gamedata, &gamedata->player, start,
-													&gamedata->textures.player);
+												&gamedata->textures.player[0]);
 	i = 0;
 	while (i < gamedata->enemy.amount)
 	{
 		write_enemy(gamedata, &gamedata->enemy.array[i], start, 
+											&gamedata->window.viewable_mapsize);
+		i++;
+	}
+	i = 0;
+	while (i < gamedata->pokemany.amount)
+	{
+		write_pokemany(gamedata, &gamedata->pokemany.array[i], start, 
 											&gamedata->window.viewable_mapsize);
 		i++;
 	}
