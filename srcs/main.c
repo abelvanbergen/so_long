@@ -6,17 +6,19 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:25:54 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/27 16:36:42 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/29 18:36:58 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "so_long.h"
+#include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
+#include "so_long.h"
 
-int	process_movement(t_gamedata* gamedata)
+int	process_movement(t_gamedata *gamedata)
 {
-	if (gamedata->move.up == true || gamedata->move.down == true ||
-					gamedata->move.left == true || gamedata->move.right == true)
+	if (gamedata->move.up == true || gamedata->move.down == true
+		|| gamedata->move.left == true || gamedata->move.right == true)
 	{
 		ft_bzero(&gamedata->player.delta, sizeof(t_2int));
 		if (gamedata->move.up == true)
@@ -28,13 +30,13 @@ int	process_movement(t_gamedata* gamedata)
 		else if (gamedata->move.right == true)
 			gamedata->player.delta.x = 1;
 		ft_bzero(&gamedata->move, sizeof(t_move));
-		move_player(&gamedata->player, &gamedata->enemy, &gamedata->mapinfo);
+		move_player(&gamedata->player, &gamedata->enemy, &gamedata->pokemany, &gamedata->mapinfo);
 		gamedata->move_counter++;
 	}
 	gamedata->window.frame_rate++;
 	if (gamedata->window.frame_rate % MOVEMENT_SPEED_ENEMY == 0)
-		move_enemies(gamedata->mapinfo.map, &gamedata->enemy,
-														&gamedata->player);
+		move_enemies(gamedata->mapinfo.map,
+			&gamedata->enemy, &gamedata->player);
 	if (gamedata->window.frame_rate % MOVEMENT_SPEED_POKEMON == 0)
 		move_pokemany(gamedata, &gamedata->pokemany);
 	make_frame(gamedata);
@@ -53,13 +55,14 @@ void	get_game_data(t_gamedata *gamedata, char *filename)
 	ft_bzero(&gamedata->move, sizeof(t_move));
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	t_gamedata	gamedata;
 
 	if (ac != 2)
-		exit_with_message\
-			("Not the right amount of arguments\nUse [./solong file_name]", 1);
+		exit_with_message(
+			"Not the right amount of arguments\nUse [./solong file_name]", 1);
+	srand((unsigned) time(0));
 	get_game_data(&gamedata, av[1]);
 	make_frame(&gamedata);
 	mlx_hook(gamedata.window.frame, 2, 1L << 0, key_press, &gamedata.move);

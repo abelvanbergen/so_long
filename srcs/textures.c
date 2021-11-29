@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 12:18:56 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/28 21:36:09 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/29 13:55:01 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	get_texture(void *mlx, t_imginfo *loc,
 
 void	free_duoble_array(char **array)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (array[i] != NULL)
@@ -47,25 +47,19 @@ void	free_duoble_array(char **array)
 
 void	get_texture_entity(void *mlx, char *start_file_name, t_imginfo **texture)
 {
-	char	**dir;
+	char		**dir;
 	char		*file_name;
 	int			i;
 	t_imginfo	*entity_texture;
 	int			amount;
 
 	i = 0;
-	dir = ft_split(TEXTURE_DIRECTIONS, ' ');
-	if (dir == NULL)
-		exit_with_message("malloc failed", 1);
+	dir = malloc_check(ft_split(TEXTURE_DIRECTIONS, ' '));
 	amount = ft_arraylen(dir);
-	entity_texture = malloc(sizeof(t_imginfo) * amount);
-	if (entity_texture == NULL)
-		exit_with_message("malloc_falied", 1);
+	entity_texture = malloc_check(malloc(sizeof(t_imginfo) * amount));
 	while (i < amount)
 	{
-		file_name = ft_strjoin(start_file_name, dir[i]);
-		if (file_name == NULL)
-			exit_with_message("malloc failed", 1);
+		file_name = malloc_check(ft_strjoin(start_file_name, dir[i]));
 		get_texture(mlx, &entity_texture[i], file_name, true);
 		free(file_name);
 		i++;
@@ -77,24 +71,18 @@ void	get_texture_entity(void *mlx, char *start_file_name, t_imginfo **texture)
 void	get_texture_entities(t_imginfo ***entities, void *mlx, char *entity_dir, char *all_names)
 {
 	char		*start_file_name;
-	t_imginfo 	**array;
+	t_imginfo	**array;
 	int			i;
-	char	**names;
+	char		**names;
 	int			amount;
 
-	names = ft_split(all_names, ' ');
-	if (names == NULL)
-		exit_with_message("malloc failed", 1);
+	names = malloc_check(ft_split(all_names, ' '));
 	amount = ft_arraylen(names);
-	array = malloc(sizeof(t_imginfo*) * amount);
-	if (array == NULL)
-		exit_with_message("malloc failed", 1);
+	array = malloc_check(malloc(sizeof(t_imginfo*) * amount));
 	i = 0;
 	while (i < amount)
 	{
-		start_file_name = ft_strjoin(entity_dir, names[i]);
-		if (start_file_name == NULL)
-			exit_with_message("malloc failed", 1);
+		start_file_name = malloc_check(ft_strjoin(entity_dir, names[i]));
 		get_texture_entity(mlx, start_file_name, &array[i]);
 		free(start_file_name);
 		i++;
@@ -110,12 +98,14 @@ void	get_textures(t_textures* textures, void *mlx)
 	get_texture(mlx, &textures->collectible, COLLECTIBLE_TEXTURE, true);
 	get_texture(mlx, &textures->unblocked_exit, UNBLOCKED_EXIT_TEXTURE, true);
 	get_texture(mlx, &textures->blocked_exit, BLOCKED_EXIT_TEXTURE, true);
-	// get_texture_entity(mlx, ENEMY_TEXTURE_LOC, textures->enemy);
 	get_texture_entities(&textures->enemy, mlx, ENEMIES_TEXTURE_LOC, ENEMIES);
-	get_texture_entities(&textures->pokemany, mlx, POKEMANY_TEXTURES_LOC, POKEMANY);
+	get_texture_entities(&textures->pokemany, mlx,
+		POKEMANY_TEXTURES_LOC, POKEMANY);
 	get_texture(mlx, &textures->floor, FLOOR_TEXTURE, false);
-	get_texture(mlx, &textures->floor_variation, FLOOR_VARIATION_TEXTURE, false);
+	get_texture(mlx,&textures->floor_variation,
+		FLOOR_VARIATION_TEXTURE, false);
 	get_texture(mlx, &textures->path_horizontal, PATH_HORIZONTAL, false);
 	get_texture(mlx, &textures->path_vertical, PATH_VERTICAL, false);
 	get_texture(mlx, &textures->path_crossing, PATH_CROSSING, false);
+	get_texture(mlx, &textures->shrub, SHRUB_TEXTURE, true);
 }

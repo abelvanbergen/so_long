@@ -6,11 +6,12 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/22 11:52:22 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/28 21:38:10 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/29 19:01:40 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include "so_long.h"
 
@@ -134,63 +135,84 @@ void	write_entity(t_gamedata *gamedata, t_entity *entity, t_2int *start,
 	write_texture_to_image(&gamedata->img, texture, loc, gamedata->window.max_texture_size);
 }
 
-void	write_enemy(t_gamedata *gamedata, t_entity *enemy, t_2int *start, t_2int *viewmap_size)
+void	jumptable_entity_textures(t_gamedata *gamedata, t_entity *entity, t_2int *start, t_imginfo **entity_texture)
 {
-	if (enemy->pos.x < start->x || enemy->pos.x >= start->x + viewmap_size->x)
+	if (entity->pos.x < start->x || entity->pos.x >= start->x + gamedata->window.viewable_mapsize.x)
 		return ;
-	if (enemy->pos.y < start->y || enemy->pos.y >= start->y + viewmap_size->y)
+	if (entity->pos.y < start->y || entity->pos.y >= start->y + gamedata->window.viewable_mapsize.y)
 		return ;
-	if (enemy->delta.x == 1)
-		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[enemy->texture_id][text_right]);
-	else if (enemy->delta.x == -1)
-		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[enemy->texture_id][text_left]);
-	else if (enemy->delta.y == 1)
-		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[enemy->texture_id][text_down]);
-	else
-		write_entity(gamedata, enemy, start, &gamedata->textures.enemy[enemy->texture_id][text_up]);
-}
-
-void	write_pokemany(t_gamedata *gamedata, t_entity *pokemon, t_2int *start, t_2int *viewmap_size)
-{
-	if (pokemon->pos.x < start->x || pokemon->pos.x >= start->x + viewmap_size->x)
-		return ;
-	if (pokemon->pos.y < start->y || pokemon->pos.y >= start->y + viewmap_size->y)
-		return ;
-	if (pokemon->moved == true)
+	if (entity->moved == true)
 	{
-		if (pokemon->delta.x == 1)
-			write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_right]);
-		else if (pokemon->delta.x == -1)
-			write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_left]);
-		else if (pokemon->delta.y == 1)
-			write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_down]);
+		if (entity->delta.x == 1)
+			write_entity(gamedata, entity, start, &entity_texture[entity->texture_id][text_right]);
+		else if (entity->delta.x == -1)
+			write_entity(gamedata, entity, start, &entity_texture[entity->texture_id][text_left]);
+		else if (entity->delta.y == 1)
+			write_entity(gamedata, entity, start, &entity_texture[entity->texture_id][text_down]);
 		else
-			write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_up]);
+			write_entity(gamedata, entity, start, &entity_texture[entity->texture_id][text_up]);
 	}
 	else
-		write_entity(gamedata, pokemon, start, &gamedata->textures.pokemany[pokemon->texture_id][text_current]);
+		write_entity(gamedata, entity, start, &entity_texture[entity->texture_id][text_current]);
 }
 
 void	write_entities(t_gamedata *gamedata, t_2int *start)
 {
 	int		i;
 
-	write_entity(gamedata, &gamedata->player, start,
-												&gamedata->textures.player[0]);
+	jumptable_entity_textures(gamedata, &gamedata->player, start,
+												&gamedata->textures.player);
 	i = 0;
 	while (i < gamedata->enemy.amount)
 	{
-		write_enemy(gamedata, &gamedata->enemy.array[i], start, 
-											&gamedata->window.viewable_mapsize);
+		if (gamedata->enemy.array[i].shown == true)
+			jumptable_entity_textures(gamedata, &gamedata->enemy.array[i],
+				start, gamedata->textures.enemy);
 		i++;
 	}
 	i = 0;
 	while (i < gamedata->pokemany.amount)
 	{
-		write_pokemany(gamedata, &gamedata->pokemany.array[i], start, 
-											&gamedata->window.viewable_mapsize);
+		if (gamedata->pokemany.array[i].shown == true)
+			jumptable_entity_textures(gamedata, &gamedata->pokemany.array[i],
+				start, gamedata->textures.pokemany);
 		i++;
 	}
+}
+
+void	write_shrub(char **map, t_imginfo *img, t_imginfo *shrub_text, int max_text_size)
+{
+	t_2int	loc;
+	t_2int	start;
+
+	loc.y = 0;
+	while (map[loc.y] != NULL)
+	{
+		loc.x = 0;
+		while (map[loc.y][loc.x] != '\0')
+		{
+			if (map[loc.y][loc.x] == POKEMON_WALK_SHRUB_CHAR)
+			{
+				start.x = loc.x * max_text_size;
+				start.y = loc.y * max_text_size;
+				write_texture_to_image(img, shrub_text, start, max_text_size);
+			}
+			loc.x++;
+		}
+		loc.y++; 
+	}
+}
+
+void	write_stats(t_gamedata* gamedata)
+{
+	char	*str_to_print;
+	char	*nbr;
+
+	nbr = malloc_check(ft_itoa(gamedata->player.pokeballs));
+	str_to_print = malloc_check(ft_strjoin("Amount of pokeballs: ", nbr));
+	// mlx_string_put(gamedata->mlx, &gamedata->img, 0, 0, 0xFFFFFF, str_to_print);
+	free(nbr);
+	free(str_to_print);
 }
 
 void	make_frame(t_gamedata* gamedata)
@@ -200,6 +222,7 @@ void	make_frame(t_gamedata* gamedata)
 	int			j;
 	int			i;
 
+	printf("amout pokemon catched: %d\n", gamedata->player.pokemon);
 	start_map_to_show = get_start(gamedata->mapinfo.size, gamedata->window.viewable_mapsize, gamedata->player.pos);
 	set_map_to_show(gamedata, start_map_to_show);
 	j = 0;
@@ -216,5 +239,8 @@ void	make_frame(t_gamedata* gamedata)
 		j++;
 	}
 	write_entities(gamedata, &start_map_to_show);
+	write_shrub(gamedata->window.map_to_show, &gamedata->img,
+		&gamedata->textures.shrub, gamedata->window.max_texture_size);
+	write_stats(gamedata);
 	mlx_put_image_to_window(gamedata->mlx, gamedata->window.frame, gamedata->img.img, 0, 0);
 }

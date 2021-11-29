@@ -6,55 +6,60 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 08:48:08 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/27 16:15:51 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/29 15:19:25 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h> //
 #include <stdlib.h>
-#include <time.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include "so_long.h"
 
-void	set_entity(t_entity *dest, t_2int pos)
+void	set_entity(t_entity *dest, t_2int pos, int texture_id)
 {
+	ft_bzero(dest, sizeof(t_entity));
 	dest->pos.x = pos.x;
 	dest->pos.y = pos.y;
+	dest->delta.x = 0;
+	dest->delta.y = 1;
+	dest->texture_id = texture_id;
+	dest->pokeballs = 0;
+	dest->pokemon = texture_id;
+	dest->shown = true;
+	dest->moved = true;
 }
 
 char	set_enemy(t_entity *enemy, char sort, t_2int pos)
 {
 	char new_tile;
 
+	set_entity(enemy, pos, rand() % DIFFERENT_ENEMIES);
 	ft_bzero(&enemy->delta, sizeof(t_2int));
 	if (sort == ENEMY_CHAR_UP)
 	{
-		new_tile = ENEMY_PATH_VERTICAL;
 		enemy->delta.y = -1;
+		return (ENEMY_PATH_VERTICAL);
 	}
 	else if (sort == ENEMY_CHAR_DOWN)
 	{
-		new_tile = ENEMY_PATH_VERTICAL;
 		enemy->delta.y = 1;
+		return(ENEMY_PATH_VERTICAL);
 	}
 	else if (sort == ENEMY_CHAR_LEFT)
 	{
-		new_tile = ENEMY_PATH_HORIZONTAL;
 		enemy->delta.x = -1;
+		return(ENEMY_PATH_HORIZONTAL);
 	}
 	else
 	{
-		new_tile = ENEMY_PATH_HORIZONTAL;
 		enemy->delta.x = 1;
+		return(ENEMY_PATH_HORIZONTAL);
 	}
-	set_entity(enemy, pos);
-	printf("%d\n", DIFFERENT_ENEMIES);
-	enemy->texture_id = rand() % DIFFERENT_ENEMIES;
-	printf("set_texture_id: %d\n", enemy->texture_id);
 	return (new_tile);
 }
 
-void	set_entities(t_entity *player, t_bot *enemy, char **map)
+void	set_player_and_enemies(t_entity *player, t_bot *enemy, char **map)
 {
 	t_2int	pos;
 	int		enemey_index;
@@ -68,7 +73,7 @@ void	set_entities(t_entity *player, t_bot *enemy, char **map)
 		{
 			if (map[pos.y][pos.x] == PLAYER_CHAR)
 			{
-				set_entity(player, pos);
+				set_entity(player, pos, 0);
 				map[pos.y][pos.x] = FLOOR_CHAR;
 			}
 			else if (ft_strchr(ENEMY_CHARS, map[pos.y][pos.x]) != NULL)
@@ -95,33 +100,83 @@ static void	check_filename(char *filename)
 	return ;
 }
 
-static char	**read_map(char *filename)
+int	get_map_start(char *map, char c)
+{
+	int	i;
+
+	i = 0;
+	while (map[i] != '\0')
+	{
+		if (map[i] != c)
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+int		get_map_end(char *map, char c)
+{
+	int	i;
+
+	i = ft_strlen(map);
+	while (i >= 0)
+	{
+		if (map[i] != c)
+			return (i);
+		i--;
+	}
+	return (-1);
+}
+
+bool	is_map_seperated(char *map)
+{
+	int	map_start;
+	int	map_end;
+	int	consecutive_newline;
+
+	map_start = get_map_start(map, '\n');
+	map_end = get_map_end(map, '\n');
+	consecutive_newline = 0;
+	while (map_start < map_end)
+	{
+		if (map[map_start] == '\n')
+			consecutive_newline++;
+		else
+			consecutive_newline = 0;
+		if (consecutive_newline == 2)
+			return (true);
+		map_start++;
+	}
+	return (false);
+}
+
+char	**read_map(char *filename)
 {
 	int		fd;
+	char	buffer[BUFFER_SIZE + 1];
 	int		bytes_read;
 	char	*line;
-	t_vla	vla;
 
 	check_filename(filename);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		exit_with_message("open failed", 1);
-	vla_init(&vla);
+	line = malloc_check(ft_strdup(""));
 	while (1)
 	{
-		bytes_read = get_next_line(fd, &line);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
-			exit_with_message("Get_next_line failed", 1);
-		if (line[0] == '\0' && bytes_read != 0)
-			exit_with_message("Empty lines are not allowed", 1);
-		if (line[0] != '\0')
-			vla_add_line_to_array(&vla, line);
+			exit_with_message("read failed", 1);
 		if (bytes_read == 0)
 			break ;
+		buffer[bytes_read] = '\0';
+		line = malloc_check(ft_strjoin_and_free(line, buffer));
 	}
-	vla_shrink(&vla);
-	close(fd);
-	return vla.array;
+	if (line[0] == '\0')
+		exit_with_message("File is empty", 1);
+	if (is_map_seperated(line) == true)
+		exit_with_message("There are newlines in the map", 1);
+	return (malloc_check(ft_split(line, '\n')));
 }
 
 void	set_floor_variation(char **map)
@@ -173,9 +228,8 @@ void	set_pokemany(t_bot *pokemany, int pokemon_spawn, char **map)
 					index_to_place_pokemon = rand() % step;
 				if (spawn_index % step == index_to_place_pokemon)
 				{
-					set_entity(&pokemany->array[pokemon_index], loc);
-					pokemany->array[pokemon_index].texture_id = rand() % DIFFERENT_POKEMON;
-					pokemany->array[pokemon_index].delta.x = 0;
+					set_entity(&pokemany->array[pokemon_index], loc,
+												rand() % DIFFERENT_POKEMON);
 					pokemany->array[pokemon_index].delta.y = 1;
 					pokemany->array[pokemon_index].moved = false;
 					pokemon_index++;
@@ -188,31 +242,30 @@ void	set_pokemany(t_bot *pokemany, int pokemon_spawn, char **map)
 	}
 }
 
-void	parse_map(char *filename, t_gamedata *gamedata)
+void	set_entities(t_gamedata *gamedata, int amount_pokemon_spawn)
 {
-	t_map_validation	validation;
-	
-	srand((unsigned) time(0));
-	gamedata->move_counter = 0;
-	gamedata->mapinfo.map = read_map(filename);
-	gamedata->mapinfo.size.x = ft_strlen(gamedata->mapinfo.map[0]);
-	gamedata->mapinfo.size.y = ft_arraylen(gamedata->mapinfo.map);
-	if (gamedata->mapinfo.size.y == 0)
-		exit_with_message("file is empty", 1);
-	map_validation(gamedata->mapinfo.map, &validation);
-	gamedata->mapinfo.tokens = validation.amount_collectibles;
-	gamedata->pokemany.amount = gamedata->mapinfo.tokens;
-	gamedata->enemy.amount = validation.amount_enemy; 
 	gamedata->enemy.array = malloc(sizeof(t_entity) * gamedata->enemy.amount);
 	if (gamedata->enemy.array == NULL)
 		exit_with_message("malloc failed", 1);
 	gamedata->pokemany.array = malloc(sizeof(t_entity) * gamedata->pokemany.amount);
 	if (gamedata->pokemany.array == NULL)
 		exit_with_message("malloc failed", 1);
-	set_entities(&gamedata->player, &gamedata->enemy, gamedata->mapinfo.map);
-	printf("pokemon spwan places: %d\n", validation.amount_pokemon_spawn);
-	set_pokemany(&gamedata->pokemany, validation.amount_pokemon_spawn, gamedata->mapinfo.map);
-	for (int i = 0; i < gamedata->pokemany.amount; i++)
-		printf("POKEMON-----\npos: %d-%d\nid: %d\n\n", gamedata->pokemany.array[i].pos.x, gamedata->pokemany.array[i].pos.y, gamedata->pokemany.array[i].texture_id);
+	set_player_and_enemies(&gamedata->player, &gamedata->enemy, gamedata->mapinfo.map);
+	set_pokemany(&gamedata->pokemany, amount_pokemon_spawn, gamedata->mapinfo.map);
+}
+
+void	parse_map(char *filename, t_gamedata *gamedata)
+{
+	t_map_validation	validation;
+	
+	gamedata->move_counter = 0;
+	gamedata->mapinfo.map = read_map(filename);
+	gamedata->mapinfo.size.x = ft_strlen(gamedata->mapinfo.map[0]);
+	gamedata->mapinfo.size.y = ft_arraylen(gamedata->mapinfo.map);
+	map_validation(gamedata->mapinfo.map, &validation);
+	gamedata->mapinfo.tokens = validation.amount_collectibles;
+	gamedata->pokemany.amount = gamedata->mapinfo.tokens;
+	gamedata->enemy.amount = validation.amount_enemy; 
+	set_entities(gamedata, validation.amount_pokemon_spawn);
 	set_floor_variation(gamedata->mapinfo.map);
 }

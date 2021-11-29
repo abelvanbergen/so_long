@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:26:10 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/28 21:35:56 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/29 18:37:44 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,14 @@
 # include <stdbool.h>
 # include "mlx.h"
 # include "libft.h"
-# include "get_next_line.h"
-
 
 /*
 ** So long config --------------------------------------------------------------
 **
 ** Must be odd numbers, so that the player can stand in the middle
 */
-# define VIEWABLE_WITDH 20
-# define VIEWABLE_HEIGHT 14
+# define VIEWABLE_WITDH 10
+# define VIEWABLE_HEIGHT 10
 /*
 ** Must be a power of 2
 */
@@ -42,9 +40,15 @@
 # define MOVEMENT_SPEED_ENEMY 25
 # define MOVEMENT_SPEED_POKEMON 39
 /*
+** the size with what read will read
+** the bigger the number, the less read calls are done
+*/
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 1024
+# endif
+/*
 **==============================================================================
 */
-
 
 
 /*
@@ -65,7 +69,7 @@
 # define PATH_VERTICAL "textures/path/vertical.xpm"
 # define PATH_CROSSING "textures/path/crossing.xpm"
 
-# define SHRUB_TEXTURE "textures/path/crossing.xpm" // juiste texture
+# define SHRUB_TEXTURE "textures/floor/shrub.xpm"
 /*
 ** player/trainer
 */
@@ -75,7 +79,7 @@
 */
 # define ENEMIES_TEXTURE_LOC "textures/enemy/"
 # define DIFFERENT_ENEMIES 2
-# define ENEMIES "women/ men/"
+# define ENEMIES "woman/ man/"
 /*
 ** Pokemon
 */
@@ -248,6 +252,7 @@ typedef struct	s_textures
 	t_imginfo	path_vertical;
 	t_imginfo	path_horizontal;
 	t_imginfo	path_crossing;
+	t_imginfo	shrub;
 }				t_textures;
 
 typedef struct	s_mapinfo
@@ -262,7 +267,10 @@ typedef struct	s_entity
 	t_2int		pos;
 	t_2int		delta;
 	int			texture_id;
+	int			pokeballs;
+	int			pokemon;
 	bool		moved;
+	bool		shown;
 }				t_entity;
 
 typedef struct	s_bot
@@ -293,12 +301,14 @@ int		ft_arraylen(char **array);
 int		get_exponent(int base, int power);
 void	print_map(char **array);
 void	my_mlx_pixel_put(t_imginfo *img, int x, int y, int color);
+void	*malloc_check(void *content);
+char	*ft_strjoin_and_free(char *str1, char *str2);
 
 void	vla_shrink(t_vla *vla);
 void	vla_add_line_to_array(t_vla* vla, char *line);
 void	vla_init(t_vla* vla);
 
-void	move_player(t_entity *player, t_bot *enemies, t_mapinfo* mapinfo);
+void	move_player(t_entity *player, t_bot *enemies, t_bot *pokemany, t_mapinfo* mapinfo);
 void	move_enemies(char **map, t_bot *enemies, t_entity *player);
 void	move_pokemany(t_gamedata *gamedata, t_bot *pokemany);
 

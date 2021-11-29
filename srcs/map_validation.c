@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 10:30:40 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/27 15:37:18 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/11/29 11:54:38 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,7 @@ void	get_map_validation_info(t_map_validation* info, char **map)
 			else if (map[j][i] == EXIT_CHAR)
 				info->amount_exit++;
 			else if (ft_strchr(ENEMY_CHARS, map[j][i]) != NULL)
-			{
-				printf("[%c] %d/%d\n", map[j][i], j, i);
 				info->amount_enemy++;
-			}
 			else if (map[j][i] == FLOOR_CHAR)
 				info->amount_floor++;
 			else if (ft_strchr(POKEMON_WALK_CHARS, map[j][i]) != NULL)
@@ -78,9 +75,7 @@ void	map_validation(char **map, t_map_validation *validation)
 	ft_bzero(validation, sizeof(t_map_validation));
 	validation->map_len = ft_strlen(map[0]);
 	validation->equal_map_len = true;
-	printf("before map valid aps: %d\n", validation->amount_pokemon_spawn);
 	get_map_validation_info(validation, map);
-	printf("after map valid aps: %d\n", validation->amount_pokemon_spawn);
 	if (validation->amount_players != 1)
 		exit_with_message("Not the right amount of players\nCan only be 1", 1);
 	if (validation->amount_collectibles <= 0)
@@ -88,8 +83,7 @@ void	map_validation(char **map, t_map_validation *validation)
 	if (validation->amount_exit <= 0)
 		exit_with_message("Not enough exits\nShould be atleast 1", 1);
 	if (validation->equal_map_len == false)
-		exit_with_message("Map is not a rectyangle", 1);
-	printf("enemies: %d-collectibles %d\n", validation->amount_enemy , validation->amount_collectibles);
+		exit_with_message("Map is not a rectangle", 1);
 	if (validation->amount_enemy > validation->amount_collectibles)
 		exit_with_message(
 				"Map is unable to beat\nMore enemies than collectibles",1);
