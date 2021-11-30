@@ -6,7 +6,7 @@
 #    By: abelfranciscusvanbergen <abelfranciscus      +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/11/18 19:37:36 by abelfrancis   #+#    #+#                  #
-#    Updated: 2021/11/29 09:09:34 by avan-ber      ########   odam.nl          #
+#    Updated: 2021/11/30 17:44:05 by avan-ber      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,18 +18,31 @@ OBJ_DIR = objs
 SRC_DIR = srcs
 
 _OBJ_FILES =	main \
-				error \
-				hooks \
-				imagesetup \
-				make_frame \
-				map_validation \
-				move \
-				parse \
-				textures \
-				utils \
-				vla \
-				windowsetup
-				
+				game/frame/make_frame \
+				game/frame/map_to_show \
+				game/frame/write_entities \
+				game/frame/write_map \
+				game/frame/write_texture \
+				game/move/collision \
+				game/move/move_enemy \
+				game/move/move_player \
+				game/move/move_pokemon \
+				game/move/utils \
+				parse/entities/set_entities \
+				parse/entities/set_player_and_enemy \
+				parse/entities/set_pokemon \
+				parse/map_seperation_check \
+				parse/map_validation \
+				parse/parse \
+				setup/imagesetup \
+				setup/texturesetup \
+				setup/windowsetup \
+				utils/array_utils \
+				utils/error \
+				utils/hooks \
+				utils/str_utils \
+				utils/utils \
+				utils/vla
 
 
 OBJ_FILES = $(addsuffix .o, $(addprefix $(OBJ_DIR)/,$(_OBJ_FILES)))

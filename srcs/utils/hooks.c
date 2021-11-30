@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/22 18:57:12 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/23 09:55:36 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/30 13:23:42 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,6 @@ int	key_press(int keycode, t_move *move)
 	if (keycode == D_KEY || keycode == RIGHT_ARROW_KEY)
 		move->right = true;
 	if (keycode == ESC_KEY)
-		exit_with_message("Quited the game", 1); //juiste quit()
+		exit_with_message("Quited the game", 1);
 	return (0);
 }

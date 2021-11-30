@@ -6,16 +6,16 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 10:30:40 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/29 11:54:38 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/30 14:32:49 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h> //
 #include "so_long.h"
 
-void	check_if_map_is_closed(char **map)
+static void	check_if_map_is_closed(char **map)
 {
-	int j;
+	int	j;
 	int	last_line;
 	int	last_char;
 
@@ -37,7 +37,25 @@ void	check_if_map_is_closed(char **map)
 	}
 }
 
-void	get_map_validation_info(t_map_validation* info, char **map)
+static void	map_char_counter(t_map_validation *info, char c)
+{
+	if (ft_strchr(VALID_MAP_CHAR, c) == NULL)
+		exit_with_message("Invalid character in map", 1);
+	if (c == PLAYER_CHAR)
+		info->amount_players++;
+	else if (c == COLLECTIBLE_CHAR)
+		info->amount_collectibles++;
+	else if (c == EXIT_CHAR)
+		info->amount_exit++;
+	else if (ft_strchr(ENEMY_CHARS, c) != NULL)
+		info->amount_enemy++;
+	else if (c == FLOOR_CHAR)
+		info->amount_floor++;
+	else if (ft_strchr(POKEMON_WALK_CHARS, c) != NULL)
+		info->amount_pokemon_spawn++;
+}
+
+static void	get_map_validation_info(t_map_validation *info, char **map)
 {
 	int	i;
 	int	j;
@@ -48,20 +66,7 @@ void	get_map_validation_info(t_map_validation* info, char **map)
 		i = 0;
 		while (map[j][i] != '\0')
 		{
-			if (ft_strchr(VALID_MAP_CHAR, map[j][i]) == NULL)
-				exit_with_message("Invalid character in map", 1);
-			if (map[j][i] == PLAYER_CHAR)
-				info->amount_players++;
-			else if (map[j][i] == COLLECTIBLE_CHAR)
-				info->amount_collectibles++;
-			else if (map[j][i] == EXIT_CHAR)
-				info->amount_exit++;
-			else if (ft_strchr(ENEMY_CHARS, map[j][i]) != NULL)
-				info->amount_enemy++;
-			else if (map[j][i] == FLOOR_CHAR)
-				info->amount_floor++;
-			else if (ft_strchr(POKEMON_WALK_CHARS, map[j][i]) != NULL)
-				info->amount_pokemon_spawn++;
+			map_char_counter(info, map[j][i]);
 			i++;
 		}
 		if (ft_strlen(map[j]) != info->map_len)
@@ -86,9 +91,9 @@ void	map_validation(char **map, t_map_validation *validation)
 		exit_with_message("Map is not a rectangle", 1);
 	if (validation->amount_enemy > validation->amount_collectibles)
 		exit_with_message(
-				"Map is unable to beat\nMore enemies than collectibles",1);
+			"Map is unable to beat\nMore enemies than collectibles", 1);
 	if (validation->amount_collectibles > validation->amount_pokemon_spawn)
 		exit_with_message(
-			"Map is unable to beat\nNot enought places to spawn pokemon",1);
+			"Map is unable to beat\nNot enought places to spawn pokemon", 1);
 	check_if_map_is_closed(map);
 }

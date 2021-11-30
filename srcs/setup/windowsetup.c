@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/21 13:54:12 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/29 13:26:47 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/30 16:41:41 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	**get_map_to_show(t_2int mapsize)
 	int		i;
 	char	**grid;
 
-	grid = malloc_check((char**)malloc(sizeof(char*) * (mapsize.y + 1)));
+	grid = malloc_check((char **)malloc(sizeof(char *) * (mapsize.y + 1)));
 	i = 0;
 	while (i < mapsize.y)
 	{
@@ -45,14 +45,14 @@ int	*get_tilesizes(int begin_size)
 	return (array);
 }
 
-void	get_window_size(t_window *window, t_2int mapsize)
+static void	get_window_size(t_window *window, t_2int mapsize)
 {
 	t_2int	max_frame_size;
 	int		*tilesizes;
 	int		i;
 
-	max_frame_size.x = 1920;
-	max_frame_size.y = 1080;
+	max_frame_size.x = WINDOW_WITDH;
+	max_frame_size.y = WINDOW_HEIGHT;
 	if (mapsize.x < VIEWABLE_WITDH)
 		window->viewable_mapsize.x = mapsize.x;
 	else

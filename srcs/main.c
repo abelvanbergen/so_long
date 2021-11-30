@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:25:54 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/29 18:36:58 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/11/30 16:32:57 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <time.h>
 #include "so_long.h"
 
-int	process_movement(t_gamedata *gamedata)
+static int	process_movement(t_gamedata *gamedata)
 {
 	if (gamedata->move.up == true || gamedata->move.down == true
 		|| gamedata->move.left == true || gamedata->move.right == true)
@@ -30,7 +30,8 @@ int	process_movement(t_gamedata *gamedata)
 		else if (gamedata->move.right == true)
 			gamedata->player.delta.x = 1;
 		ft_bzero(&gamedata->move, sizeof(t_move));
-		move_player(&gamedata->player, &gamedata->enemy, &gamedata->pokemany, &gamedata->mapinfo);
+		move_player(&gamedata->player, &gamedata->enemy,
+			&gamedata->pokemany, &gamedata->mapinfo);
 		gamedata->move_counter++;
 	}
 	gamedata->window.frame_rate++;
@@ -43,7 +44,7 @@ int	process_movement(t_gamedata *gamedata)
 	return (0);
 }
 
-void	get_game_data(t_gamedata *gamedata, char *filename)
+static void	get_game_data(t_gamedata *gamedata, char *filename)
 {
 	parse_map(filename, gamedata);
 	gamedata->mlx = mlx_init();
@@ -51,7 +52,8 @@ void	get_game_data(t_gamedata *gamedata, char *filename)
 		exit_with_message("mlx_init failed", 1);
 	get_textures(&gamedata->textures, gamedata->mlx);
 	get_window(&gamedata->window, gamedata->mlx, gamedata->mapinfo.size);
-	get_image(&gamedata->img, gamedata->mlx, gamedata->window.viewable_mapsize, gamedata->window.max_texture_size);
+	get_image(&gamedata->img, gamedata->mlx,
+		gamedata->window.viewable_mapsize, gamedata->window.max_texture_size);
 	ft_bzero(&gamedata->move, sizeof(t_move));
 }
 
