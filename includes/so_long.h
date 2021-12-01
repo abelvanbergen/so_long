@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:26:10 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/30 17:40:37 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/01 17:42:32 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 /*
 ** size of window in textures
 */
-# define VIEWABLE_WITDH 10
-# define VIEWABLE_HEIGHT 10
+# define VIEWABLE_WITDH 25
+# define VIEWABLE_HEIGHT 15
 /*
 ** Must be a power of 2
 */
@@ -44,7 +44,7 @@
 ** the bigger the number, the slower the enemy
 */
 # define MOVEMENT_SPEED_ENEMY 35
-# define MOVEMENT_SPEED_POKEMON 54
+# define MOVEMENT_SPEED_POKEMON 64
 /*
 ** the size with what read will read
 ** the bigger the number, the less read calls are done
@@ -63,7 +63,7 @@
 **
 ** map
 */
-# define WALL_TEXTURE "textures/pokebal/stone.xpm"
+# define WALL_TEXTURE "textures/wall/rock_2.xpm"
 # define FLOOR_TEXTURE "textures/floor/grass.xpm"
 # define FLOOR_VARIATION_TEXTURE "textures/floor/flower.xpm"
 
@@ -97,8 +97,10 @@
 ** Pokemon
 */
 # define POKEMANY_TEXTURES_LOC "textures/pokemany/"
-# define DIFFERENT_POKEMON 3
-# define POKEMANY "diglett/ eevee/ growlithe/"
+# define DIFFERENT_POKEMON 16
+# define POKEMANY "aerodactyl/ arboc/ blastoise/ cadabra/ charmander/ diglett/ \
+eevee/ gengar/ growlithe/ machamp/ magnetron/ meowth/ mewtwo/ muk/ peugeot/ \
+ponyta/"
 /*
 ** Utils
 */
@@ -383,6 +385,7 @@ bool	is_face_to_face(t_entity *a, t_entity *b);
 void	turn(t_2int *delta, t_tile_sides direction);
 char	get_tile(int x, int y, char **map);
 char	*set_sides(char *tiles, t_entity *entity, char **map);
+void	move_entity_pos(t_entity *entity);
 
 void	move_player(t_entity *player, t_bot *enemies,
 			t_bot *pokemany, t_mapinfo *mapinfo);

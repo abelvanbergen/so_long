@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 14:51:34 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/30 17:25:59 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/01 17:31:55 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	player_try_catch_pokemon(t_entity *player, t_entity *pokemon)
 {
 	if (player->pokeballs == 0)
 		exit(0); //pokemon defeat player
+	if (player->pokemon == 6)
+		return ;
 	player->pokeballs--;
 	player->pokemon++;
 	pokemon->pos.x = 0;

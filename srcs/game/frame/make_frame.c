@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/22 11:52:22 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/30 16:54:20 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/01 17:29:33 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ static void	write_line_on_window(char *first_part, int nbr,
 	str_nbr = malloc_check(ft_itoa(nbr));
 	str_to_print = malloc_check(ft_strjoin(first_part, str_nbr));
 	mlx_string_put(gamedata->mlx, gamedata->window.frame,
-		loc.x, loc.y, 0xFFFFFF, str_to_print);
+		loc.x, loc.y, 0x0, str_to_print);
 	free(str_nbr);
 	free(str_to_print);
 }
