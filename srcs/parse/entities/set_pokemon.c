@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 14:28:03 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/30 17:33:48 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/02 11:14:05 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@ static int	set_pokemon(t_entity *pokemon, t_2int loc)
 	pokemon->delta.y = 1;
 	pokemon->moved = false;
 	return (1);
+}
+
+static void	set_i_loc_pokemon(int *index_to_place, int spawn_index, int step)
+{
+	if (spawn_index % step == 0)
+		*index_to_place = rand() % step;
 }
 
 void	set_pokemany(t_bot *pokemany, int pokemon_spawn, char **map)
@@ -39,8 +45,7 @@ void	set_pokemany(t_bot *pokemany, int pokemon_spawn, char **map)
 		{
 			if (ft_strchr(POKEMON_WALK_CHARS, map[loc.y][loc.x]) != NULL)
 			{
-				if (spawn_index % step == 0)
-					index_to_place_pokemon = rand() % step;
+				set_i_loc_pokemon(&index_to_place_pokemon, spawn_index, step);
 				if (spawn_index % step == index_to_place_pokemon)
 					pokemon_i += set_pokemon(&pokemany->array[pokemon_i], loc);
 				spawn_index++;

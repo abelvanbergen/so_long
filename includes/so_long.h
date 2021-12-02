@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:26:10 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/12/01 17:42:32 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/02 10:57:08 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@
 /*
 **==============================================================================
 */
-
-
 
 /*
 ** textures --------------------------------------------------------------------
@@ -109,8 +107,6 @@ ponyta/"
 **==============================================================================
 */
 
-
-
 /*
 ** textures --------------------------------------------------------------------
 ** map
@@ -147,8 +143,6 @@ ponyta/"
 **==============================================================================
 */
 
-
-
 /*
 ** Keycodes --------------------------------------------------------------------
 */
@@ -165,15 +159,13 @@ ponyta/"
 **==============================================================================
 */
 
-
-
 /*
 ** enums -----------------------------------------------------------------------
 */
 /*
 ** used to get the right texture by the direction
 */
-typedef enum	e_texture_dir
+typedef enum e_texture_dir
 {
 	text_up,
 	text_right,
@@ -184,7 +176,7 @@ typedef enum	e_texture_dir
 /*
 ** used by the movement of the bots
 */
-typedef enum	e_tile_sides
+typedef enum e_tile_sides
 {
 	front,
 	back,
@@ -196,20 +188,47 @@ typedef enum	e_tile_sides
 **==============================================================================
 */
 
-typedef	struct	s_2int
+/*
+** datasets --------------------------------------------------------------------
+**
+** utils
+*/
+typedef struct s_2int
 {
 	int			x;
 	int			y;
 }				t_2int;
 
-typedef struct	s_vla
+typedef struct s_vla
 {
 	char		**array;
 	int			size;
 	int			capacity;
 }				t_vla;
 
-typedef struct		s_map_validation
+typedef struct s_move
+{
+	bool			up;
+	bool			down;
+	bool			right;
+	bool			left;
+}					t_move;
+
+typedef struct s_imginfo
+{
+	void			*img;
+	char			*addr;
+	int				bits_per_pixel;
+	int				line_length;
+	int				endian;
+	int				img_width;
+	int				img_height;
+	bool			is_sprite;
+}					t_imginfo;
+/*
+** parse
+*/
+typedef struct s_map_validation
 {
 	unsigned int	amount_players;
 	unsigned int	amount_collectibles;
@@ -221,29 +240,7 @@ typedef struct		s_map_validation
 	bool			equal_map_len;
 }					t_map_validation;
 
-typedef struct		s_move
-{
-	bool			up;
-	bool			down;
-	bool			right;
-	bool			left;
-}					t_move;
-/*
-** utils image elem
-*/
-typedef struct  	s_imginfo
-{
-	void			*img;
-	char			*addr;
-	int				bits_per_pixel;
-	int				line_length;
-	int				endian;
-	int				img_width;
-	int				img_height;
-	bool			is_sprite;
-}					t_imginfo;
-
-typedef struct 	s_window
+typedef struct s_window
 {
 	void		*frame;
 	int			frame_rate;
@@ -252,8 +249,7 @@ typedef struct 	s_window
 	char		**map_to_show;
 }				t_window;
 
-
-typedef struct	s_textures
+typedef struct s_textures
 {
 	t_imginfo	wall;
 	t_imginfo	*player;
@@ -270,14 +266,16 @@ typedef struct	s_textures
 	t_imginfo	shrub;
 }				t_textures;
 
-typedef struct	s_mapinfo
+typedef struct s_mapinfo
 {
 	char		**map;
 	t_2int		size;
 	int			tokens;
 }				t_mapinfo;
-
-typedef struct	s_entity
+/*
+** entities
+*/
+typedef struct s_entity
 {
 	t_2int		pos;
 	t_2int		delta;
@@ -285,17 +283,20 @@ typedef struct	s_entity
 	int			pokeballs;
 	int			pokemon;
 	int			enemies_defeated;
+	int			move_counter;
 	bool		moved;
 	bool		shown;
 }				t_entity;
 
-typedef struct	s_bot
+typedef struct s_bot
 {
 	int			amount;
 	t_entity	*array;
 }				t_bot;
-
-typedef struct	s_gamedata
+/*
+** gamedata
+*/
+typedef struct s_gamedata
 {
 	void		*mlx;
 	t_window	window;
@@ -304,18 +305,23 @@ typedef struct	s_gamedata
 	t_textures	textures;
 	t_imginfo	img;
 	t_entity	player;
-	int			move_counter;
 	t_bot		enemy;
 	t_bot		pokemany;
 }				t_gamedata;
+/*
+**==============================================================================
+*/
 
 /*
+** prototypes ------------------------------------------------------------------
+**
 ** utils
 */
 void	exit_with_message(char *message, int exitcode);
 void	exit_with_2_messages(char *message1, char *message2, int exitcode);
 
 int		key_press(int keycode, t_move *move);
+int		close_screen(t_move *move);
 
 void	vla_shrink(t_vla *vla);
 void	vla_add_line_to_array(t_vla *vla, char *line);
@@ -370,7 +376,7 @@ void	set_map_to_show(t_gamedata *gamedata, t_2int *start);
 
 void	make_frame(t_gamedata *gamedata);
 /*
-** hook
+** collision
 */
 void	pokemon_moved_on_pokemon(t_entity *moved, t_entity *collided);
 void	turn_enemies_backwards(t_entity *moved, t_entity *collided);
@@ -393,5 +399,8 @@ void	move_player(t_entity *player, t_bot *enemies,
 void	move_enemies(char **map, t_bot *enemies, t_entity *player);
 
 void	move_pokemany(t_gamedata *gamedata, t_bot *pokemany);
+/*
+**==============================================================================
+*/
 
 #endif

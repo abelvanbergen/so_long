@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2019/11/05 10:35:55 by avan-ber       #+#    #+#                */
-/*   Updated: 2019/11/12 11:58:37 by avan-ber      ########   odam.nl         */
+/*   Created: 2019/11/05 10:35:55 by avan-ber      #+#    #+#                 */
+/*   Updated: 2021/12/02 10:47:30 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	*ft_memmove(void *dst, const void *src, size_t len)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (dst == 0 && src == 0)

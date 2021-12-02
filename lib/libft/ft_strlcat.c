@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2019/11/18 09:56:03 by avan-ber       #+#    #+#                */
-/*   Updated: 2019/11/18 10:13:35 by avan-ber      ########   odam.nl         */
+/*   Created: 2019/11/18 09:56:03 by avan-ber      #+#    #+#                 */
+/*   Updated: 2021/12/02 10:50:16 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize)
 {
-	size_t src_l;
-	size_t dst_l;
+	size_t	src_l;
+	size_t	dst_l;
 
 	src_l = ft_strlen(src);
 	dst_l = ft_strlen(dst);

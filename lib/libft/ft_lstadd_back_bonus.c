@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2019/11/11 11:30:08 by avan-ber       #+#    #+#                */
-/*   Updated: 2019/11/12 15:25:25 by avan-ber      ########   odam.nl         */
+/*   Created: 2019/11/11 11:30:08 by avan-ber      #+#    #+#                 */
+/*   Updated: 2021/12/02 10:46:11 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	ft_lstadd_back(t_list **alst, t_list *new)
 {
-	t_list *l;
+	t_list	*l;
 
 	l = *alst;
 	if (*alst == 0)

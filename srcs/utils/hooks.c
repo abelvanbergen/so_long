@@ -11,6 +11,13 @@
 /* ************************************************************************** */
 
 #include "so_long.h"
+#include <stdlib.h>
+
+int	close_screen(t_move *move)
+{
+	(void)move;
+	exit(0);
+}
 
 int	key_press(int keycode, t_move *move)
 {
@@ -23,6 +30,6 @@ int	key_press(int keycode, t_move *move)
 	if (keycode == D_KEY || keycode == RIGHT_ARROW_KEY)
 		move->right = true;
 	if (keycode == ESC_KEY)
-		exit_with_message("Quited the game", 1);
+		close_screen(move);
 	return (0);
 }

@@ -67,6 +67,7 @@ static void	get_window_size(t_window *window, t_2int mapsize)
 		|| max_frame_size.y < tilesizes[i] * window->viewable_mapsize.y)
 		i++;
 	window->max_texture_size = tilesizes[i];
+	free(tilesizes);
 }
 
 void	get_window(t_window *window, void *mlx, t_2int mapsize)

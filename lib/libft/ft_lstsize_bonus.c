@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/11/11 11:16:28 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/18 20:00:08 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/12/02 10:46:28 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ft_lstsize(t_list *lst)
 {
-	int c;
+	int	c;
 
 	if (lst == NULL)
 		return (0);

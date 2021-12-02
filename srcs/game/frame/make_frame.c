@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/22 11:52:22 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/12/01 17:29:33 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/02 09:57:26 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,15 @@ static void	write_stats(t_gamedata *gamedata)
 
 	loc.x = 5;
 	loc.y = 10;
-	write_line_on_window("Moves done: ", gamedata->move_counter, gamedata, loc);
+	write_line_on_window("Moves done: ",
+		gamedata->player.move_counter, gamedata, loc);
 	loc.x = 5;
 	loc.y = 20;
 	write_line_on_window("Pokeballs: ",
 		gamedata->player.pokeballs, gamedata, loc);
 	loc.x = 5;
 	loc.y = 30;
-	write_line_on_window("Pokemon cathched: ",
+	write_line_on_window("Pokemon catched: ",
 		gamedata->player.pokemon, gamedata, loc);
 	loc.x = 5;
 	loc.y = 40;

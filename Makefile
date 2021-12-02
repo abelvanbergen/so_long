@@ -6,13 +6,13 @@
 #    By: abelfranciscusvanbergen <abelfranciscus      +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/11/18 19:37:36 by abelfrancis   #+#    #+#                  #
-#    Updated: 2021/11/30 17:44:05 by avan-ber      ########   odam.nl          #
+#    Updated: 2021/12/02 11:40:02 by avan-ber      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = so_long
 
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra
 
 OBJ_DIR = objs
 SRC_DIR = srcs
@@ -72,9 +72,9 @@ $(NAME): $(OBJ_FILES)
 	make -C $(MLX_LOC)
 	cp lib/mlx/libmlx.a .
 	make bonus -C $(LIBFT_LOC)
-	$(CC) $(FLAGS) $(LIBS) $(FRAMEWORK) -o $(NAME) $(OBJ_FILES) $(INCLUDES) -fsanitize=address -g
+	$(CC) $(FLAGS) $(LIBS) $(FRAMEWORK) -o $(NAME) $(OBJ_FILES) $(INCLUDES)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c 
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c includes/so_long.h
 	@mkdir -p $(OBJ_DIR)/$(dir $*)
 	gcc -c $(CFLAGS) $(INCLUDES) -I . $< -o $@
 

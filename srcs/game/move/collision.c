@@ -6,11 +6,12 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 14:51:34 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/12/01 17:31:55 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/02 10:51:15 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "so_long.h"
 
 void	pokemon_moved_on_pokemon(t_entity *moved, t_entity *collided)
@@ -30,7 +31,10 @@ void	turn_enemies_backwards(t_entity *moved, t_entity *collided)
 void	player_try_catch_pokemon(t_entity *player, t_entity *pokemon)
 {
 	if (player->pokeballs == 0)
-		exit(0); //pokemon defeat player
+	{
+		printf("You did not have enough pokeballs to catch the pokemon\n");
+		exit(0);
+	}
 	if (player->pokemon == 6)
 		return ;
 	player->pokeballs--;
@@ -44,7 +48,10 @@ void	player_try_catch_pokemon(t_entity *player, t_entity *pokemon)
 void	player_moved_on_enemy(t_entity *player, t_entity *enemy)
 {
 	if (player->pokemon == 0)
-		exit(0); //enemy defeat player, moved against a enemy, how to exit?
+	{
+		printf("You did not have pokemon to defeat team Rocket\n");
+		exit(0);
+	}
 	player->pokemon--;
 	player->enemies_defeated++;
 	enemy->pos.x = 0;
@@ -63,8 +70,8 @@ bool	is_next_pos_entity(t_bot *entities, t_entity *entity,
 	next_pos.y = entity->pos.y + entity->delta.y;
 	while (i < entities->amount)
 	{
-		if (next_pos.x == entities->array[i].pos.x &&
-			next_pos.y == entities->array[i].pos.y)
+		if (next_pos.x == entities->array[i].pos.x
+			&& next_pos.y == entities->array[i].pos.y)
 		{
 			(f)(entity, &entities->array[i]);
 			return (true);

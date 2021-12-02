@@ -6,7 +6,7 @@
 /*   By: abelfranciscusvanbergen <abelfranciscus      +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/18 19:25:54 by abelfrancis   #+#    #+#                 */
-/*   Updated: 2021/11/30 16:32:57 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/02 09:50:30 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ static int	process_movement(t_gamedata *gamedata)
 		ft_bzero(&gamedata->move, sizeof(t_move));
 		move_player(&gamedata->player, &gamedata->enemy,
 			&gamedata->pokemany, &gamedata->mapinfo);
-		gamedata->move_counter++;
 	}
 	gamedata->window.frame_rate++;
 	if (gamedata->window.frame_rate % MOVEMENT_SPEED_ENEMY == 0)
@@ -68,6 +67,7 @@ int	main(int ac, char **av)
 	get_game_data(&gamedata, av[1]);
 	make_frame(&gamedata);
 	mlx_hook(gamedata.window.frame, 2, 1L << 0, key_press, &gamedata.move);
+	mlx_hook(gamedata.window.frame, 17, 1L << 17, close_screen, &gamedata.move);
 	mlx_loop_hook(gamedata.mlx, process_movement, &gamedata);
 	mlx_loop(gamedata.mlx);
 }

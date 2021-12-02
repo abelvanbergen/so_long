@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/10/29 16:26:56 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/29 11:13:43 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/02 10:50:23 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize)
 {
-	size_t i;
-	size_t i_len;
+	size_t	i;
+	size_t	i_len;
 
 	i = 0;
 	i_len = 0;

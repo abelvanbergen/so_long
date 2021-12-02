@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 14:49:54 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/12/01 18:16:55 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/02 11:17:13 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ static bool	is_valid_place_for_pokemon(t_entity *pokemon, t_tile_sides dir,
 	t_2int	temp_delta;
 	t_2int	temp_pos;
 
-	temp_delta.x = pokemon->delta.x;
-	temp_delta.y = pokemon->delta.y;
+	temp_delta = pokemon->delta;
 	turn(&temp_delta, dir);
 	temp_pos.x = pokemon->pos.x + temp_delta.x;
 	temp_pos.y = pokemon->pos.y + temp_delta.y;

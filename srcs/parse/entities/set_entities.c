@@ -6,7 +6,7 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 13:54:01 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/30 17:31:29 by avan-ber      ########   odam.nl         */
+/*   Updated: 2021/12/02 11:17:48 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@
 void	set_entity(t_entity *dest, t_2int pos, int texture_id)
 {
 	ft_bzero(dest, sizeof(t_entity));
-	dest->pos.x = pos.x;
-	dest->pos.y = pos.y;
+	dest->pos = pos;
 	dest->delta.x = 0;
 	dest->delta.y = 1;
 	dest->texture_id = texture_id;
 	dest->pokeballs = 0;
 	dest->pokemon = 0;
+	dest->move_counter = 0;
 	dest->enemies_defeated = 0;
 	dest->shown = true;
 	dest->moved = true;

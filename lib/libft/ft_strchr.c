@@ -6,13 +6,13 @@
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/10/29 14:53:46 by avan-ber      #+#    #+#                 */
-/*   Updated: 2021/11/21 11:38:16 by abelfrancis   ########   odam.nl         */
+/*   Updated: 2021/12/02 10:47:25 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 char	*ft_strchr(const char *s, int c)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (s[i] != '\0')

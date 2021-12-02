@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2019/10/30 11:01:26 by avan-ber       #+#    #+#                */
-/*   Updated: 2019/11/18 08:33:49 by avan-ber      ########   odam.nl         */
+/*   Created: 2019/10/30 11:01:26 by avan-ber      #+#    #+#                 */
+/*   Updated: 2021/12/02 10:47:18 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	if (dst == 0 && src == 0)

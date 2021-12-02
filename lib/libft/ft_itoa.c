@@ -5,8 +5,8 @@
 /*                                                     +:+                    */
 /*   By: avan-ber <avan-ber@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2019/11/06 11:24:58 by avan-ber       #+#    #+#                */
-/*   Updated: 2019/11/14 20:16:28 by avan-ber      ########   odam.nl         */
+/*   Created: 2019/11/06 11:24:58 by avan-ber      #+#    #+#                 */
+/*   Updated: 2021/12/02 10:46:07 by avan-ber      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	calc_i(int n)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (n <= 0)
@@ -27,7 +27,7 @@ static int	calc_i(int n)
 	return (i);
 }
 
-char		*ft_itoa(int n)
+char	*ft_itoa(int n)
 {
 	int		i;
 	char	*str;
